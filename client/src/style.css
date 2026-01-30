@@ -1,0 +1,10 @@
+/* Global Styles */
+:root {
+  --color-lacquer: #2b333e; /* 大漆 */
+  --color-cinnabar: #b13b2e; /* 朱砂 */
+  --color-text-primary: #333;
+}
+
+body {
+  color: var(--color-text-primary);
+}
