@@ -1,14 +1,14 @@
 <script setup>
-import { onMounted, onUnmounted, ref, unref } from 'vue'
-import { useScrollStore } from './stores/scrollStore'
-import SideIndicator from './components/SideIndicator.vue'
-import Loading from './components/Loading.vue'
-import GlobalProgressBar from './components/GlobalProgressBar.vue'
-import Section1 from './components/Section1.vue'
-import Section2 from './components/Section2.vue'
-import Section3 from './components/Section3.vue'
-import Section4 from './components/Section4.vue'
-import Section5 from './components/Section5.vue'
+// import { onMounted, onUnmounted, ref, unref } from 'vue'
+// import { useScrollStore } from '~/stores/scrollStore'
+// import SideIndicator from './components/SideIndicator.vue'
+// import Loading from './components/Loading.vue'
+// import GlobalProgressBar from './components/GlobalProgressBar.vue'
+// import Section1 from './components/Section1.vue'
+// import Section2 from './components/Section2.vue'
+// import Section3 from './components/Section3.vue'
+// import Section4 from './components/Section4.vue'
+// import Section5 from './components/Section5.vue'
 
 const store = useScrollStore()
 const mainContent = ref(null)
