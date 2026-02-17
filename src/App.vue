@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, unref } from 'vue'
 import { useScrollStore } from './stores/scrollStore'
 import SideIndicator from './components/SideIndicator.vue'
 import Loading from './components/Loading.vue'
@@ -35,15 +35,24 @@ const setupObserver = () => {
   }
 
   observer = new IntersectionObserver((entries) => {
+    let candidate = null
+    let bestRatio = 0
+
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        // Extract index from id "scene-X"
-        const index = parseInt(entry.target.id.replace('scene-', ''))
-        if (!isNaN(index) && index !== store.currentScene) {
-          store.setScene(index)
-        }
+      if (!entry.isIntersecting) return
+
+      const index = parseInt(entry.target.id.replace('scene-', ''))
+      if (isNaN(index)) return
+
+      if (entry.intersectionRatio >= bestRatio) {
+        bestRatio = entry.intersectionRatio
+        candidate = index
       }
     })
+
+    if (candidate !== null && candidate !== unref(store.currentScene)) {
+      store.setScene(candidate)
+    }
   }, options)
 
   // Observe all scene sections
