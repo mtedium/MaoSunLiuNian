@@ -110,11 +110,11 @@ onUnmounted(() => {
         <div class="max-w-4xl px-8 text-center space-y-12">
           <p class="text-3xl md:text-5xl font-serif leading-relaxed text-amber-50">
             “当赵州桥的第一块拱石落下，<br>
-            木头教会了石头如何呼吸。<br>
+            木头教会了石头如何呼吸。”<br>
             <span class="block mt-8 text-2xl md:text-4xl opacity-80 text-stone-400">
               腰铁是石头的榫头，卯眼是拱石的承诺。<br>
               ——1400年来，它们共同承受着洨河的冲击，<br>
-              从未背弃彼此。”
+              从未背弃彼此。
             </span>
           </p>
         </div>

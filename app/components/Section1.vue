@@ -52,10 +52,10 @@ onUnmounted(() => {
         <div class="relative z-10 max-w-4xl text-center space-y-8">
           <p class="text-3xl md:text-5xl font-serif leading-relaxed tracking-wide text-stone-100 opacity-90">
             “当第一根带榫头的木柱插入地基，<br/>
-            中国人对‘连接’的理解便已定型<br/>
+            中国人对‘连接’的理解便已定型”<br/>
             <span class="block mt-6 text-2xl md:text-4xl opacity-80">
               ——不是征服，而是契合；<br/>
-              不是焊接，而是对话。”
+              &emsp;&emsp;不是焊接，而是对话。
             </span>
           </p>
         </div>

@@ -101,11 +101,11 @@ onUnmounted(() => {
         <div class="max-w-4xl px-8 text-center space-y-12">
           <p class="text-3xl md:text-5xl font-serif leading-relaxed text-amber-50">
             “在徽州宏村的月沼边，<br>
-            一位木匠不需要图纸。<br>
+            一位木匠不需要图纸。”<br>
             <span class="block mt-8 text-2xl md:text-4xl opacity-80 text-stone-400">
               他手中的斧凿与千年的榫卯基因对话，<br>
               每一刀都落在‘理’上。<br>
-              ——这是口传心授的密码，也是活态的传承。”
+              ——这是口传心授的密码，也是活态的传承。
             </span>
           </p>
         </div>

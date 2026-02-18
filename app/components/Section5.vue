@@ -50,7 +50,7 @@ onUnmounted(() => {
           <p class="text-3xl md:text-5xl font-serif leading-relaxed text-amber-50">
             “今天的建筑师在屏幕上拖动滑块，<br>
             生成的曲线与7000年前的榫头，<br>
-            共享着同一个数学本质。<br>
+            共享着同一个数学本质。”<br>
             <span class="block mt-8 text-2xl md:text-4xl opacity-80 text-stone-400">
               ——卯榫从未过时。
             </span>

@@ -71,10 +71,10 @@ onUnmounted(() => {
         <div class="max-w-4xl px-8 text-center space-y-8">
           <p class="text-3xl md:text-5xl font-serif leading-relaxed text-amber-50">
             “在唐长安的大明宫，<br>
-            一根檐柱可能要承受三十种不同的力。<br>
+            一根檐柱可能要承受三十种不同的力。”<br>
             <span class="block mt-8 text-2xl md:text-4xl opacity-80 text-stone-400">
               匠人们用榫卯编织出一张隐形的网，<br>
-              让重力在木头的咬合中温柔地流转。”
+              让重力在木头的咬合中温柔地流转。
             </span>
           </p>
         </div>
