@@ -2,12 +2,86 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import BaseChart from './BaseChart.vue' // Explicit import for clarity
 
 gsap.registerPlugin(ScrollTrigger)
 
 const sectionRef = ref(null)
 const containerRef = ref(null)
 let scrollTriggerInstance = null
+
+// Chart Options for Hemudu Mortise Types
+const chartOptions = {
+  backgroundColor: 'transparent',
+  title: {
+    text: '河姆渡出土榫卯类型占比',
+    left: 'center',
+    top: 0,
+    textStyle: {
+      color: '#d6d3d1', // text-stone-300
+      fontSize: 16,
+      fontFamily: 'serif'
+    }
+  },
+  tooltip: {
+    trigger: 'item',
+    backgroundColor: 'rgba(28, 25, 23, 0.9)', // bg-stone-900
+    borderColor: '#44403c', // border-stone-700
+    textStyle: {
+      color: '#e7e5e4' // text-stone-200
+    }
+  },
+  legend: {
+    orient: 'vertical',
+    left: 'left',
+    textStyle: {
+      color: '#a8a29e' // text-stone-400
+    },
+    top: 'middle'
+  },
+  series: [
+    {
+      name: '榫卯类型',
+      type: 'pie',
+      radius: ['40%', '70%'],
+      center: ['60%', '50%'],
+      avoidLabelOverlap: false,
+      itemStyle: {
+        borderRadius: 5,
+        borderColor: '#1c1917', // bg-stone-900
+        borderWidth: 2
+      },
+      label: {
+        show: false,
+        position: 'center'
+      },
+      emphasis: {
+        label: {
+          show: true,
+          fontSize: 18,
+          fontWeight: 'bold',
+          color: '#f59e0b' // text-amber-500
+        },
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      },
+      labelLine: {
+        show: false
+      },
+      data: [
+        { value: 350, name: '圆榫', itemStyle: { color: '#78350f' } }, // amber-900
+        { value: 280, name: '方榫', itemStyle: { color: '#92400e' } }, // amber-800
+        { value: 150, name: '燕尾榫', itemStyle: { color: '#b45309' } }, // amber-700
+        { value: 120, name: '企口榫', itemStyle: { color: '#d97706' } }, // amber-600
+        { value: 80, name: '穿带榫', itemStyle: { color: '#f59e0b' } }, // amber-500
+        { value: 60, name: '透榫', itemStyle: { color: '#fbbf24' } }   // amber-400
+      ]
+    }
+  ]
+}
 
 onMounted(() => {
   const container = containerRef.value
@@ -47,7 +121,7 @@ onUnmounted(() => {
       <!-- 1-1: Golden Quote Screen -->
       <div class="w-screen h-full flex flex-col items-center justify-center relative px-8 bg-gradient-to-b from-stone-950 to-stone-900">
         <!-- Background: Misty Primitive Forest/Swamp atmosphere -->
-        <div class="absolute inset-0 z-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1440557653082-e8e186733eeb?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay pointer-events-none"></div>
+        <div class="absolute inset-0 z-0 opacity-100 bg-[url('https://images.unsplash.com/photo-1440557653082-e8e186733eeb?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay pointer-events-none"></div>
         
         <div class="relative z-10 max-w-4xl text-center space-y-8">
           <p class="text-3xl md:text-5xl font-serif leading-relaxed tracking-wide text-stone-100 opacity-90">
@@ -68,7 +142,7 @@ onUnmounted(() => {
           <div class="relative h-[60vh] w-full bg-stone-800 rounded-lg overflow-hidden shadow-2xl border border-stone-700 group">
              <!-- Placeholder for Hemudu Architecture -->
              <div class="absolute inset-0 bg-stone-700 flex items-center justify-center text-stone-500">
-                [河姆渡干栏式建筑复原大图]
+                <img src="../assets/images/hemudu-architecture.jpg" alt="河姆渡干栏式建筑复原大图" class="w-full h-full object-cover">
              </div>
              <div class="absolute bottom-4 left-4 bg-black/60 px-3 py-1 text-xs text-stone-300 backdrop-blur-sm rounded">
                干栏式建筑复原示意
@@ -101,55 +175,128 @@ onUnmounted(() => {
       </div>
 
       <!-- 1-3: Technical Analysis Screen -->
-      <div class="w-screen h-full flex items-center relative bg-stone-900 border-l border-stone-800">
-        <div class="container mx-auto px-8 h-full flex flex-col justify-center">
-          <!-- Top: Image/Visual -->
-          <div class="flex-1 flex items-center justify-center py-8">
-             <div class="relative w-full max-w-4xl aspect-video bg-stone-800 rounded-lg border border-stone-700 flex items-center justify-center">
-               <span class="text-stone-600 text-lg">[考古出土的原始榫卯构件白描/实拍]</span>
-               <!-- In real project, use <img src="..." /> here -->
+      <div class="w-screen h-full flex items-center justify-center relative bg-stone-900 border-l border-stone-800 p-4 md:p-8">
+        
+        <!-- Dashboard Content (Clean Layout) -->
+        <div class="w-full h-full max-h-[85vh] flex flex-col relative z-10 pt-16 pb-8">
+          
+          <!-- Header Section -->
+          <div class="flex flex-col md:flex-row items-center justify-between pb-8 mb-6 shrink-0 border-b border-stone-800/30">
+             <div>
+                <h2 class="text-4xl font-serif font-bold text-stone-100 tracking-wider mb-2">
+                  <span class="text-amber-600 mr-2">/</span>技术解析
+                </h2>
+                <p class="text-stone-500 font-light tracking-widest text-sm pl-8 uppercase">
+                  The Wisdom of Mortise and Tenon
+                </p>
              </div>
+             <!-- Decorative Line (Replaces Mode Indicator) -->
+             <!-- <div class="hidden md:block h-[1px] w-32 bg-gradient-to-l from-transparent to-stone-700"></div> -->
           </div>
 
-          <!-- Middle: Tech Points -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pb-12">
-            <div class="bg-stone-800/50 p-6 rounded-lg border border-stone-700 hover:border-amber-700/50 transition-colors duration-300">
-              <h3 class="text-xl font-bold text-amber-100 mb-3">01. 圆榫与卯眼</h3>
-              <p class="text-stone-400 text-sm leading-relaxed">
-                考古发现的木构件上，榫头直径约5-7厘米，卯眼精准对应，误差不超过2毫米。
-              </p>
+          <!-- Main Content Grid (3 Columns) -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch flex-1 min-h-0">
+            
+            <!-- Left Column: Tech Points (30%) -->
+            <div class="lg:col-span-4 flex flex-col justify-center space-y-4 overflow-y-auto pr-2">
+               <div class="group/item flex gap-4 p-5 rounded-xl bg-stone-800/20 hover:bg-stone-800/60 border border-stone-800 hover:border-amber-700/30 transition-all duration-300">
+                  <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-stone-800 flex items-center justify-center text-amber-600 font-mono text-xl font-bold border border-stone-700 group-hover/item:text-amber-500 transition-colors shadow-lg">
+                    01
+                  </div>
+                  <div>
+                    <h4 class="text-xl font-bold text-stone-200 mb-2 group-hover/item:text-amber-100 transition-colors">圆榫与卯眼</h4>
+                    <p class="text-stone-400 text-sm leading-relaxed">
+                      考古发现的木构件上，榫头直径约5-7厘米，卯眼精准对应，<span class="text-stone-300 font-medium">误差不超过2毫米</span>。
+                    </p>
+                  </div>
+               </div>
+
+               <div class="group/item flex gap-4 p-5 rounded-xl bg-stone-800/20 hover:bg-stone-800/60 border border-stone-800 hover:border-amber-700/30 transition-all duration-300">
+                  <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-stone-800 flex items-center justify-center text-amber-600 font-mono text-xl font-bold border border-stone-700 group-hover/item:text-amber-500 transition-colors shadow-lg">
+                    02
+                  </div>
+                  <div>
+                    <h4 class="text-xl font-bold text-stone-200 mb-2 group-hover/item:text-amber-100 transition-colors">燕尾榫雏形</h4>
+                    <p class="text-stone-400 text-sm leading-relaxed">
+                      部分构件呈现早期嵌合形态，有效防止构件<span class="text-stone-300 font-medium">水平位移</span>，展现了对受力的深刻理解。
+                    </p>
+                  </div>
+               </div>
+
+               <div class="group/item flex gap-4 p-5 rounded-xl bg-stone-800/20 hover:bg-stone-800/60 border border-stone-800 hover:border-amber-700/30 transition-all duration-300">
+                  <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-stone-800 flex items-center justify-center text-amber-600 font-mono text-xl font-bold border border-stone-700 group-hover/item:text-amber-500 transition-colors shadow-lg">
+                    03
+                  </div>
+                  <div>
+                    <h4 class="text-xl font-bold text-stone-200 mb-2 group-hover/item:text-amber-100 transition-colors">无钉结构</h4>
+                    <p class="text-stone-400 text-sm leading-relaxed">
+                      完全依靠木材自身咬合，已具备后世卯榫的<span class="text-stone-300 font-medium">基本逻辑</span>，开启了中国木构建筑的先河。
+                    </p>
+                  </div>
+               </div>
             </div>
-            <div class="bg-stone-800/50 p-6 rounded-lg border border-stone-700 hover:border-amber-700/50 transition-colors duration-300">
-              <h3 class="text-xl font-bold text-amber-100 mb-3">02. 燕尾榫雏形</h3>
-              <p class="text-stone-400 text-sm leading-relaxed">
-                部分构件呈现早期嵌合形态，有效防止构件水平位移。
-              </p>
+
+            <!-- Center Column: Hero Image (40%) -->
+            <div class="lg:col-span-5 relative flex flex-col items-center justify-center bg-stone-900/30 rounded-2xl border border-stone-800 p-4 group/image overflow-hidden">
+               <!-- Background Grid -->
+               <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px] opacity-20"></div>
+               
+               <div class="relative w-full h-full flex items-center justify-center p-6 transition-transform duration-700 group-hover/image:scale-105">
+                  <img src="../assets/images/hemudu-sunmao.png" alt="原始榫卯构件白描" class="w-full h-full object-contain drop-shadow-2xl opacity-90 hover:opacity-100 transition-opacity">
+               </div>
+               
+               <div class="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded text-xs text-stone-400 border border-stone-700/50 font-mono">
+                 河姆渡出土原始榫卯构件白描
+               </div>
             </div>
-            <div class="bg-stone-800/50 p-6 rounded-lg border border-stone-700 hover:border-amber-700/50 transition-colors duration-300">
-              <h3 class="text-xl font-bold text-amber-100 mb-3">03. 无钉结构</h3>
-              <p class="text-stone-400 text-sm leading-relaxed">
-                完全依靠木材自身咬合，已具备后世卯榫的基本逻辑。
-              </p>
+
+            <!-- Right Column: Chart (30%) -->
+            <div class="lg:col-span-3 flex flex-col gap-4">
+               <div class="flex-1 bg-stone-900/50 rounded-2xl border border-stone-800 p-4 flex flex-col relative shadow-inner min-h-[250px]">
+                 <div class="absolute top-4 left-4 text-xs text-amber-500/80 font-mono uppercase tracking-wider">Type Distribution</div>
+                 <div class="flex-1 flex items-center justify-center w-full">
+                    <BaseChart :options="chartOptions" height="100%" width="100%" />
+                 </div>
+               </div>
+               
+               <!-- Data Stats Mini-Cards (Enhanced) -->
+               <div class="grid grid-cols-1 gap-3 shrink-0">
+                 <div class="bg-stone-800/40 p-4 rounded-xl border border-stone-700/50 flex flex-col justify-center group hover:bg-stone-800/60 transition-colors">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="text-stone-500 text-xs font-mono">出土规模 / Artifacts</span>
+                      <span class="w-1.5 h-1.5 bg-amber-700 rounded-full"></span>
+                    </div>
+                    <div class="flex items-end gap-2">
+                       <span class="text-stone-200 font-bold font-serif text-2xl">数千件</span>
+                       <span class="text-stone-500 text-xs mb-1">木构件</span>
+                    </div>
+                 </div>
+                 
+                 <div class="bg-stone-800/40 p-4 rounded-xl border border-stone-700/50 flex flex-col justify-center group hover:bg-stone-800/60 transition-colors">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="text-stone-500 text-xs font-mono">榫卯类型 / Types</span>
+                      <span class="w-1.5 h-1.5 bg-amber-700 rounded-full"></span>
+                    </div>
+                    <div class="flex items-end gap-2">
+                       <span class="text-stone-200 font-bold font-serif text-2xl">6种</span>
+                       <span class="text-stone-500 text-xs mb-1">主要形制</span>
+                    </div>
+                 </div>
+
+                 <div class="bg-stone-800/40 p-4 rounded-xl border border-stone-700/50 flex flex-col justify-center group hover:bg-stone-800/60 transition-colors">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="text-stone-500 text-xs font-mono">防潮高度 / Elevation</span>
+                      <span class="w-1.5 h-1.5 bg-amber-700 rounded-full"></span>
+                    </div>
+                    <div class="flex items-end gap-2">
+                       <span class="text-stone-200 font-bold font-serif text-2xl">1.5-2m</span>
+                       <span class="text-stone-500 text-xs mb-1">离地间距</span>
+                    </div>
+                 </div>
+               </div>
             </div>
           </div>
 
-          <!-- Bottom: Data Card -->
-          <div class="w-full border-t border-stone-800 py-6">
-            <div class="flex flex-wrap justify-between items-center text-stone-500 font-mono text-sm md:text-base">
-              <div class="flex items-center space-x-2">
-                <span class="w-2 h-2 bg-amber-700 rounded-full"></span>
-                <span>出土构件数千件 / 6种类型</span>
-              </div>
-              <div class="flex items-center space-x-2">
-                <span class="w-2 h-2 bg-amber-700 rounded-full"></span>
-                <span>居住面高出地面 1.5-2 米</span>
-              </div>
-              <div class="flex items-center space-x-2">
-                <span class="w-2 h-2 bg-amber-700 rounded-full"></span>
-                <span>有效防潮、防虫蛇</span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 

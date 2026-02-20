@@ -3,7 +3,7 @@
     <!-- 全屏动态纹理背景 (z-index 最底层) -->
     <div class="fixed inset-0 z-0 opacity-20 pointer-events-none">
       <!-- 将来放置 Canvas 或 WebGL 纹理 -->
-      <div class="w-full h-full bg-[url('/assets/texture-placeholder.png')] bg-cover bg-center"></div>
+      <!-- <div class="w-full h-full bg-[url('/assets/texture-placeholder.png')] bg-cover bg-center"></div> -->
     </div>
 
     <!-- 导航栏 -->

@@ -35,7 +35,7 @@ const handleNavClick = (path) => {
     3. 去掉 container mx-auto，改为 w-full px-6 md:px-10，使内容更贴近边缘
   -->
   <nav class="fixed top-0 left-0 w-full z-50 bg-stone-900/95 backdrop-blur-md border-b border-stone-700/30 shadow-lg">
-    <div class="w-full px-4 md:px-10 h-20 flex items-center justify-between">
+    <div class="w-full px-4 md:px-10 h-20 flex items-center justify-between relative">
       <!-- 品牌标识 -->
       <NuxtLink to="/" class="flex items-center gap-4 group" @click="handleNavClick('/')">
         <!-- 红色印章模拟 - 调亮红色 -->
