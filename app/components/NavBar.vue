@@ -1,16 +1,18 @@
 <script setup>
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useScrollStore } from '~/stores/scrollStore'
+import { useAuthStore } from '~/stores/authStore'
 
 const route = useRoute()
+const router = useRouter()
 const store = useScrollStore()
+const authStore = useAuthStore()
 
 const navItems = [
   { name: '首页', path: '/' },
   { name: '地图', path: '/map' },
   { name: '社区', path: '/community' },
-  { name: '顾问', path: '/?' },
-  { name: '用户中心', path: '/profile' }
+  { name: '顾问', path: '/consultant' }
 ]
 
 const isActive = (path) => {
@@ -25,6 +27,11 @@ const handleNavClick = (path) => {
     // 强制重置序章
     store.resetIntro()
   }
+}
+
+const handleLogout = () => {
+  authStore.logout()
+  router.push('/')
 }
 </script>
 
@@ -73,6 +80,47 @@ const handleNavClick = (path) => {
           <span 
             class="absolute -bottom-1 left-1/2 -translate-x-1/2 h-[2px] bg-amber-800/80 transition-all duration-300 ease-out"
             :class="isActive(item.path) ? 'w-4 opacity-100' : 'w-0 opacity-0'"
+          ></span>
+        </NuxtLink>
+
+        <!-- 登录 / 用户状态 -->
+        <div v-if="authStore.isLoggedIn" class="flex items-center gap-4">
+          <NuxtLink
+            to="/profile"
+            class="relative group py-2 flex flex-col items-center justify-center"
+          >
+            <span 
+              class="text-lg font-serif tracking-widest transition-colors duration-300"
+              :class="isActive('/profile') ? 'text-stone-100 font-medium' : 'text-stone-400 group-hover:text-stone-300'"
+            >
+              {{ authStore.displayName }}
+            </span>
+            <span 
+              class="absolute -bottom-1 left-1/2 -translate-x-1/2 h-[2px] bg-amber-800/80 transition-all duration-300 ease-out"
+              :class="isActive('/profile') ? 'w-4 opacity-100' : 'w-0 opacity-0'"
+            ></span>
+          </NuxtLink>
+          <button
+            @click="handleLogout"
+            class="text-stone-500 hover:text-red-400 text-sm font-serif tracking-wider transition-colors duration-300"
+          >
+            退出
+          </button>
+        </div>
+        <NuxtLink
+          v-else
+          to="/login"
+          class="relative group py-2 flex flex-col items-center justify-center"
+        >
+          <span 
+            class="text-lg font-serif tracking-widest transition-colors duration-300"
+            :class="isActive('/login') ? 'text-stone-100 font-medium' : 'text-stone-400 group-hover:text-stone-300'"
+          >
+            登录
+          </span>
+          <span 
+            class="absolute -bottom-1 left-1/2 -translate-x-1/2 h-[2px] bg-amber-800/80 transition-all duration-300 ease-out"
+            :class="isActive('/login') ? 'w-4 opacity-100' : 'w-0 opacity-0'"
           ></span>
         </NuxtLink>
       </div>
