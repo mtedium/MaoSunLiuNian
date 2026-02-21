@@ -9,6 +9,7 @@ const navItems = [
   { name: '首页', path: '/' },
   { name: '地图', path: '/map' },
   { name: '社区', path: '/community' },
+  { name: '顾问', path: '/?' },
   { name: '用户中心', path: '/profile' }
 ]
 

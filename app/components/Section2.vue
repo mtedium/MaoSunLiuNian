@@ -1,10 +1,11 @@
 <script setup>
 import { TresCanvas } from '@tresjs/core'
-import { OrbitControls } from '@tresjs/cientos'
+import { OrbitControls, GLTFModel } from '@tresjs/cientos'
 import { BasicShadowMap, SRGBColorSpace, NoToneMapping } from 'three'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { onMounted, onUnmounted, ref } from 'vue'
+import BaseChart from './BaseChart.vue'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -18,11 +19,113 @@ const gl = {
   toneMapping: NoToneMapping,
 }
 
+// 3D Model Path
+const dougongModel = '/dougong.glb'
+
 // References for animation
 const sectionRef = ref(null)
 const containerRef = ref(null)
 const meshRef = ref(null)
+const cameraRef = ref(null)
+const controlsRef = ref(null)
 let scrollTriggerInstance = null
+
+// Radar Chart Option
+const radarOption = {
+  backgroundColor: 'transparent',
+  radar: {
+    indicator: [
+      { name: '抗震性', max: 100 },
+      { name: '柔韧性', max: 100 },
+      { name: '规模化', max: 100 },
+      { name: '承重力', max: 100 },
+      { name: '耐久度', max: 100 }
+    ],
+    shape: 'circle',
+    splitNumber: 5,
+    radius: '75%',
+    center: ['50%', '50%'],
+    axisName: {
+      color: '#fbbf24', // amber-400
+      fontSize: 14,
+      fontWeight: 'bold'
+    },
+    splitLine: {
+      lineStyle: {
+        color: [
+          'rgba(245, 158, 11, 0.1)',
+          'rgba(245, 158, 11, 0.2)',
+          'rgba(245, 158, 11, 0.3)',
+          'rgba(245, 158, 11, 0.4)',
+          'rgba(245, 158, 11, 0.5)'
+        ].reverse()
+      }
+    },
+    splitArea: {
+      show: true,
+      areaStyle: {
+         color: ['rgba(245, 158, 11, 0.05)', 'transparent']
+      }
+    },
+    axisLine: {
+      lineStyle: {
+        color: 'rgba(245, 158, 11, 0.3)'
+      }
+    }
+  },
+  series: [
+    {
+      name: '榫卯结构性能',
+      type: 'radar',
+      lineStyle: {
+        width: 3,
+        color: '#f59e0b', // amber-500
+        type: 'solid',
+        shadowBlur: 10,
+        shadowColor: '#f59e0b'
+      },
+      data: [
+        {
+          value: [95, 90, 85, 92, 88],
+          name: '榫卯结构',
+          symbol: 'circle',
+          symbolSize: 8,
+          itemStyle: {
+            color: '#fbbf24'
+          },
+          areaStyle: {
+            color: {
+              type: 'radial',
+              x: 0.5,
+              y: 0.5,
+              r: 0.5,
+              colorStops: [{
+                  offset: 0, color: 'rgba(245, 158, 11, 0.8)' // 0% 处的颜色
+              }, {
+                  offset: 1, color: 'rgba(245, 158, 11, 0.2)' // 100% 处的颜色
+              }],
+              global: false // 缺省为 false
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+
+// Reset camera function
+const resetCamera = () => {
+  if (cameraRef.value) {
+    cameraRef.value.position.set(5, 3, 5)
+    cameraRef.value.lookAt(0, 0, 0)
+  }
+  
+  const controls = controlsRef.value?.value || controlsRef.value?.controls
+  if (controls) {
+    controls.target.set(0, 0, 0)
+    controls.update()
+  }
+}
 
 // Animation logic
 onMounted(() => {
@@ -85,9 +188,9 @@ onUnmounted(() => {
         <!-- Background Image Placeholder -->
         <div class="absolute inset-0 z-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1599571234909-29ed5d1321d6?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay pointer-events-none"></div>
         
-        <div class="container mx-auto px-8 relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div class="space-y-6">
-            <h2 class="text-6xl font-serif text-amber-500">进化</h2>
+        <div class="container mx-auto px-8 relative z-10 grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
+          <div class="space-y-6 md:col-span-2">
+            <h2 class="text-6xl font-serif text-amber-500">第二幕：进化</h2>
             <div class="text-xl font-mono text-stone-400 border-l-2 border-amber-600 pl-4">
               公元7-13世纪 · 长安 · 汴京 · 临安
             </div>
@@ -98,8 +201,9 @@ onUnmounted(() => {
           </div>
           
           <!-- Image Placeholder -->
-          <div class="relative h-[60vh] w-full bg-stone-800 rounded-lg overflow-hidden border border-stone-700 shadow-2xl flex items-center justify-center group">
-            <div class="text-stone-500">[居中全宽大图：大明宫/宋代汴京繁华示意]</div>
+          <div class="relative h-[60vh] w-full bg-stone-800 rounded-lg overflow-hidden border border-stone-700 shadow-2xl flex items-center justify-center group md:col-span-3">
+              <!-- [居中全宽大图：大明宫/宋代汴京繁华示意] -->
+              <img src="../assets/images/song-daminggong.jpeg" alt="" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
           </div>
         </div>
       </div>
@@ -121,34 +225,19 @@ onUnmounted(() => {
         <!-- Right: 3D Canvas -->
         <div class="w-full md:w-2/3 h-[50vh] md:h-full relative">
           <TresCanvas v-bind="gl">
-            <TresPerspectiveCamera :position="[4, 4, 4]" :look-at="[0, 0, 0]" />
-            <OrbitControls enable-damping :auto-rotate="false" />
+            <TresPerspectiveCamera ref="cameraRef" :position="[5, 3, 5]" :look-at="[0, 0, 0]" />
+            <OrbitControls ref="controlsRef" enable-damping :auto-rotate="false" />
             
-            <TresAmbientLight :intensity="0.5" />
-            <TresDirectionalLight :position="[5, 5, 5]" :intensity="1.2" cast-shadow />
-            <TresDirectionalLight :position="[-5, 5, -5]" :intensity="0.5" color="#fbbf24" />
+            <TresAmbientLight :intensity="3.0" />
+            <TresDirectionalLight :position="[5, 5, 5]" :intensity="5.0" cast-shadow />
+            <TresDirectionalLight :position="[-5, 5, -5]" :intensity="3.0" color="#fbbf24" />
+            <TresDirectionalLight :position="[0, 2, 5]" :intensity="4.0" color="#ffffff" />
             
             <!-- Dougong Placeholder -->
-            <TresGroup ref="meshRef">
-               <!-- Central Block (Dou) -->
-              <TresMesh :position="[0, 0, 0]">
-                <TresBoxGeometry :args="[1, 0.6, 1]" />
-                <TresMeshStandardMaterial color="#b45309" :roughness="0.6" />
-              </TresMesh>
-              <!-- Arm (Gong) -->
-              <TresMesh :position="[0, 0.5, 0]">
-                <TresBoxGeometry :args="[3, 0.4, 0.6]" />
-                <TresMeshStandardMaterial color="#d97706" :roughness="0.6" />
-              </TresMesh>
-               <!-- Top Block -->
-               <TresMesh :position="[1.2, 0.9, 0]">
-                <TresBoxGeometry :args="[0.6, 0.4, 0.6]" />
-                <TresMeshStandardMaterial color="#b45309" :roughness="0.6" />
-              </TresMesh>
-               <TresMesh :position="[-1.2, 0.9, 0]">
-                <TresBoxGeometry :args="[0.6, 0.4, 0.6]" />
-                <TresMeshStandardMaterial color="#b45309" :roughness="0.6" />
-              </TresMesh>
+            <TresGroup ref="meshRef" :scale="0.03" :position="[0, -2, 0]">
+              <Suspense>
+                <GLTFModel :path="dougongModel" />
+              </Suspense>
             </TresGroup>
             
             <TresGridHelper :args="[20, 20]" :position="[0, -2, 0]" :visible="false" />
@@ -161,80 +250,91 @@ onUnmounted(() => {
                 <p class="text-amber-500 font-bold">拖动模型查看斗拱结构</p>
              </div>
           </div>
+          
+          <!-- Reset Button -->
+          <div class="absolute bottom-8 left-8 z-20">
+            <button @click="resetCamera" class="bg-stone-800/80 hover:bg-amber-600 text-amber-500 hover:text-white px-6 py-2 rounded transition-colors shadow-lg border border-stone-700/50 font-bold tracking-wider" title="重置视角">
+              还原
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- 2-4: 技术细节屏 (100vw) -->
       <div class="w-screen h-full flex items-center relative bg-stone-900">
-        <div class="container mx-auto px-8 h-full flex flex-col justify-center py-12">
-          <div class="text-center mb-12">
-            <h3 class="text-3xl font-serif text-stone-200">唐宋精密构件解析</h3>
-          </div>
-
-          <!-- Top: Component Diagrams -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            <div class="text-center space-y-4">
-              <div class="h-32 bg-stone-800 rounded border border-stone-700 flex items-center justify-center text-stone-600">
-                [线图：馒头榫]
-              </div>
-              <h4 class="text-amber-500 font-bold">馒头榫</h4>
-              <p class="text-sm text-stone-400">柱头承重，垂直连接</p>
-            </div>
-            <div class="text-center space-y-4">
-               <div class="h-32 bg-stone-800 rounded border border-stone-700 flex items-center justify-center text-stone-600">
-                [线图：箍头榫]
-              </div>
-              <h4 class="text-amber-500 font-bold">箍头榫</h4>
-              <p class="text-sm text-stone-400">梁柱拉结，稳固框架</p>
-            </div>
-            <div class="text-center space-y-4">
-               <div class="h-32 bg-stone-800 rounded border border-stone-700 flex items-center justify-center text-stone-600">
-                [线图：透榫]
-              </div>
-              <h4 class="text-amber-500 font-bold">透榫</h4>
-              <p class="text-sm text-stone-400">贯通锁定，灵活受力</p>
-            </div>
-          </div>
-
-          <!-- Bottom: Analysis & Data -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center border-t border-stone-800 pt-12">
-            <!-- Left: Radar Chart Placeholder -->
-            <div class="aspect-square bg-stone-800/50 rounded-full border border-stone-700 flex items-center justify-center relative max-w-md mx-auto">
-              <span class="text-stone-500">[ECharts 雷达图占位]</span>
-              <div class="absolute inset-0 flex items-center justify-center opacity-30 pointer-events-none">
-                 <!-- Simple CSS Polygon to mimic radar -->
-                 <div class="w-2/3 h-2/3 border border-amber-500/50 rotate-45"></div>
-                 <div class="w-1/2 h-1/2 border border-amber-500/80 absolute rotate-12"></div>
-              </div>
+        <div class="container mx-auto px-4 md:px-0 h-full flex flex-col justify-center py-12">
+          
+          <!-- Content Wrapper -->
+          <div class="w-full max-w-7xl mx-auto h-full flex flex-col justify-center pt-20">
+            <div class="text-center mb-8">
+              <h3 class="text-3xl font-serif text-stone-200">唐宋精密构件解析</h3>
             </div>
 
-            <!-- Right: Text Analysis -->
-            <div class="space-y-8">
-              <div>
-                <h4 class="text-xl font-bold text-amber-100 mb-2">● 模数化设计</h4>
-                <p class="text-stone-400 leading-relaxed">
-                  以“材”为基本模数，实现皇宫组件标准化生产。
-                </p>
-              </div>
-              <div>
-                <h4 class="text-xl font-bold text-amber-100 mb-2">● 节点逻辑</h4>
-                <p class="text-stone-400 leading-relaxed">
-                  三维咬合，将重力转化为内部摩擦力与剪切力，实现“墙倒屋不塌”。
-                </p>
-              </div>
-              
-              <!-- Data Cards -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
-                <div class="bg-stone-800 p-4 rounded border-l-4 border-amber-700">
-                  <div class="text-xs text-stone-500">大明宫含元殿 (663年)</div>
-                  <div class="text-amber-500 font-bold">唐代木构之巅</div>
+            <!-- Component Diagrams -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+              <div class="text-center space-y-4">
+                <div class="h-[25vh] bg-stone-800 rounded border border-stone-700 flex items-center justify-center text-stone-600 overflow-hidden relative group">
+                  <img src="../assets/images/mantousun.png" alt="馒头榫" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
                 </div>
-                <div class="bg-stone-800 p-4 rounded border-l-4 border-amber-700">
-                   <div class="text-xs text-stone-500">《营造法式》材分八等</div>
-                  <div class="text-amber-500 font-bold">最早标准化体系</div>
+                <h4 class="text-amber-500 font-bold">馒头榫</h4>
+                <p class="text-sm text-stone-400">柱头承重，垂直连接</p>
+              </div>
+              <div class="text-center space-y-4">
+                 <div class="h-[25vh] bg-stone-800 rounded border border-stone-700 flex items-center justify-center text-stone-600 overflow-hidden relative group">
+                   <img src="../assets/images/gutousun.png" alt="箍头榫" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+                </div>
+                <h4 class="text-amber-500 font-bold">箍头榫</h4>
+                <p class="text-sm text-stone-400">梁柱拉结，稳固框架</p>
+              </div>
+              <div class="text-center space-y-4">
+                 <div class="h-[25vh] bg-stone-800 rounded border border-stone-700 flex items-center justify-center text-stone-600 overflow-hidden relative group">
+                   <img src="../assets/images/tousun.png" alt="透榫" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+                </div>
+                <h4 class="text-amber-500 font-bold">透榫</h4>
+                <p class="text-sm text-stone-400">贯通锁定，灵活受力</p>
+              </div>
+            </div>
+
+            <div class="border-t border-stone-800 my-8"></div>
+
+            <!-- Bottom: Analysis & Data -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+              <!-- Left: Radar Chart -->
+              <div class="aspect-square flex items-center justify-center relative max-w-sm mx-auto w-full p-4">
+                <client-only>
+                  <BaseChart :options="radarOption" class="w-full h-full" />
+                </client-only>
+              </div>
+
+              <!-- Right: Text Analysis -->
+              <div class="space-y-8">
+                <div>
+                  <h4 class="text-xl font-bold text-amber-100 mb-3">● 模数化设计</h4>
+                  <p class="text-stone-400 leading-relaxed text-lg">
+                    以“材”为基本模数，实现皇宫组件标准化生产。
+                  </p>
+                </div>
+                <div>
+                  <h4 class="text-xl font-bold text-amber-100 mb-3">● 节点逻辑</h4>
+                  <p class="text-stone-400 leading-relaxed text-lg">
+                    三维咬合，将重力转化为内部摩擦力与剪切力，实现“墙倒屋不塌”。
+                  </p>
+                </div>
+                
+                <!-- Data Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
+                  <div class="bg-stone-800 p-6 rounded border-l-4 border-amber-700">
+                    <div class="text-sm text-stone-500 mb-1">大明宫含元殿 (663年)</div>
+                    <div class="text-amber-500 font-bold text-lg">唐代木构之巅</div>
+                  </div>
+                  <div class="bg-stone-800 p-6 rounded border-l-4 border-amber-700">
+                     <div class="text-sm text-stone-500 mb-1">《营造法式》材分八等</div>
+                    <div class="text-amber-500 font-bold text-lg">最早标准化体系</div>
+                  </div>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </div>

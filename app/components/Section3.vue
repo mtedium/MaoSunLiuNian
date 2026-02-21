@@ -21,7 +21,7 @@ const chartOption = computed(() => ({
     textStyle: { color: '#e7e5e4' }
   },
   grid: {
-    top: '15%',
+    top: '20%',
     left: '3%',
     right: '4%',
     bottom: '10%',
@@ -37,7 +37,7 @@ const chartOption = computed(() => ({
   yAxis: {
     type: 'value',
     name: '节点密度 (个/m²)',
-    nameTextStyle: { color: '#a8a29e', align: 'right' },
+    nameTextStyle: { color: '#a8a29e', align: 'left' },
     splitLine: { show: false }, // Remove grid lines
     axisLine: { show: true, lineStyle: { color: '#78350f' } },
     axisLabel: { color: '#78716c' }
@@ -114,15 +114,16 @@ onUnmounted(() => {
       <!-- 3-2: Architecture Comparison Screen -->
       <div class="w-screen h-full flex flex-col relative border-r border-stone-800 bg-stone-800">
         <div class="container mx-auto px-8 h-full flex flex-col justify-center py-12">
-           <h2 class="text-4xl font-serif text-amber-500 text-center mb-16">定型 · 民间智慧</h2>
+           <h2 class="text-4xl font-serif text-amber-500 text-center mb-16">第三幕：定型 · 民间智慧</h2>
            
            <div class="flex flex-col md:flex-row gap-8 items-stretch justify-center h-[60vh]">
              <!-- North -->
-             <div class="flex-1 bg-stone-900 rounded-lg overflow-hidden border border-stone-700 relative group hover:border-amber-700 transition-colors">
-               <div class="absolute inset-0 bg-stone-800 flex items-center justify-center text-stone-600">
-                 [抬梁式结构示意图]
+             <div class="flex-1 bg-stone-900 rounded-lg overflow-hidden border border-stone-700 relative group hover:border-amber-700 transition-colors flex flex-col">
+               <div class="relative flex-1 bg-stone-800 flex items-center justify-center overflow-hidden">
+                 <!-- [抬梁式结构示意图] -->
+                  <img src="../assets/images/tailiangshi.png" alt="" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
                </div>
-               <div class="absolute bottom-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent">
+               <div class="relative z-10 w-full p-6 bg-stone-900 border-t border-stone-800">
                  <h3 class="text-2xl font-bold text-amber-100 mb-2">北方 · 抬梁式</h3>
                  <p class="text-sm text-stone-400">柱上搁梁，梁上搁檩。空间开阔，气势恢宏。</p>
                </div>
@@ -142,11 +143,12 @@ onUnmounted(() => {
              </div>
 
              <!-- South -->
-             <div class="flex-1 bg-stone-900 rounded-lg overflow-hidden border border-stone-700 relative group hover:border-amber-700 transition-colors">
-               <div class="absolute inset-0 bg-stone-800 flex items-center justify-center text-stone-600">
-                 [穿斗式结构示意图]
+             <div class="flex-1 bg-stone-900 rounded-lg overflow-hidden border border-stone-700 relative group hover:border-amber-700 transition-colors flex flex-col">
+               <div class="relative flex-1 bg-stone-800 flex items-center justify-center overflow-hidden">
+                 <!-- [穿斗式结构示意图] -->
+                 <img src="../assets/images/chuandoushi.jpeg" alt="" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
                </div>
-               <div class="absolute bottom-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent">
+               <div class="relative z-10 w-full p-6 bg-stone-900 border-t border-stone-800">
                  <h3 class="text-2xl font-bold text-amber-100 mb-2">南方 · 穿斗式</h3>
                  <p class="text-sm text-stone-400">柱子直接承檩，以穿枋串联。省工省料，抗风抗震。</p>
                </div>
@@ -169,17 +171,21 @@ onUnmounted(() => {
             <!-- Right: Description & Gallery Grid -->
             <div class="space-y-12">
                <div class="grid grid-cols-2 gap-4">
-                 <div class="aspect-video bg-stone-800 rounded border border-stone-700 flex items-center justify-center text-stone-500 text-xs">
-                   [徽派：冬瓜梁]
+                 <div class="aspect-video bg-stone-800 rounded border border-stone-700 flex items-center justify-center text-stone-500 text-xs relative overflow-hidden">
+                    <img src="../assets/images/donggualiang.png" alt="冬瓜梁" class="w-full h-full object-cover">
+                    <span class="absolute bottom-1 right-1 bg-black/60 px-2 py-0.5 rounded text-stone-300 text-[10px] backdrop-blur-sm">冬瓜梁</span>
                  </div>
-                 <div class="aspect-video bg-stone-800 rounded border border-stone-700 flex items-center justify-center text-stone-500 text-xs">
-                   [闽南：防风榫]
+                 <div class="aspect-video bg-stone-800 rounded border border-stone-700 flex items-center justify-center text-stone-500 text-xs relative overflow-hidden">
+                   <img src="../assets/images/guatong.png" alt="瓜筒" class="w-full h-full object-cover">
+                   <span class="absolute bottom-1 right-1 bg-black/60 px-2 py-0.5 rounded text-stone-300 text-[10px] backdrop-blur-sm">瓜筒</span>
                  </div>
-                 <div class="aspect-video bg-stone-800 rounded border border-stone-700 flex items-center justify-center text-stone-500 text-xs">
-                   [晋商：防盗榫]
+                 <div class="aspect-video bg-stone-800 rounded border border-stone-700 flex items-center justify-center text-stone-500 text-xs relative overflow-hidden">
+                   <img src="../assets/images/queti.png" alt="雀替" class="w-full h-full object-cover">
+                   <span class="absolute bottom-1 right-1 bg-black/60 px-2 py-0.5 rounded text-stone-300 text-[10px] backdrop-blur-sm">雀替</span>
                  </div>
-                 <div class="aspect-video bg-stone-800 rounded border border-stone-700 flex items-center justify-center text-stone-500 text-xs">
-                   [川西：穿斗架]
+                 <div class="aspect-video bg-stone-800 rounded border border-stone-700 flex items-center justify-center text-stone-500 text-xs relative overflow-hidden">
+                   <img src="../assets/images/chenggong.png" alt="撑弓" class="w-full h-full object-cover">
+                   <span class="absolute bottom-1 right-1 bg-black/60 px-2 py-0.5 rounded text-stone-300 text-[10px] backdrop-blur-sm">撑弓</span>
                  </div>
                </div>
 

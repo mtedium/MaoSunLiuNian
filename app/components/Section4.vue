@@ -13,9 +13,9 @@ let scrollTriggerInstance = null
 
 // Hotspots Data
 const hotspots = [
-  { id: 1, x: '25%', y: '30%', title: '敞肩拱', desc: '大拱两端各设两个小拱，减轻自重，增加泄洪能力。' },
-  { id: 2, x: '50%', y: '60%', title: '独立拱券', desc: '28道拱券独立砌筑，一道受损不影响其他，便于修缮。' },
-  { id: 3, x: '70%', y: '40%', title: '腰铁', desc: '拱石间以“腰铁”横向连接，嵌入卯眼浇以生铁水，实现“以柔克刚”。' }
+  { id: 1, x: '20%', y: '32%', title: '敞肩拱', desc: '大拱两端各设两个小拱，减轻自重，增加泄洪能力。' },
+  { id: 2, x: '50%', y: '33%', title: '独立拱券', desc: '28道拱券独立砌筑，一道受损不影响其他，便于修缮。' },
+  { id: 3, x: '75%', y: '45%', title: '腰铁', desc: '拱石间以“腰铁”横向连接，嵌入卯眼浇以生铁水，实现“以柔克刚”。' }
 ]
 
 const toggleHotspot = (id) => {
@@ -52,7 +52,8 @@ const chartOption = computed(() => ({
   yAxis: {
     type: 'value',
     name: '灾害强度等级',
-    nameTextStyle: { color: '#a8a29e', align: 'right' },
+    nameLocation: 'end',
+    nameTextStyle: { color: '#a8a29e', align: 'left', padding: [0, 0, 0, 10] },
     splitLine: { show: false },
     axisLine: { show: true, lineStyle: { color: '#78350f' } },
     axisLabel: { color: '#78716c' }
@@ -125,22 +126,20 @@ onUnmounted(() => {
         <!-- Background Image -->
         <div class="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1548625361-9877077510d5?q=80&w=2070&auto=format&fit=crop" 
+            src="../assets/images/zhaozhouqiao.jpg" 
             alt="赵州桥全景" 
             class="w-full h-full object-cover opacity-60"
           />
           <div class="absolute inset-0 bg-gradient-to-t from-stone-900 via-stone-900/40 to-transparent"></div>
         </div>
 
-        <div class="container mx-auto px-8 relative z-10 h-full flex flex-col justify-between py-24">
-          <!-- Top Left Coordinates -->
-          <div class="text-amber-500 font-mono text-lg uppercase tracking-widest border-l-4 border-amber-600 pl-4">
-            公元605-616年 · 隋代 · 河北赵县
-          </div>
-
+        <div class="container mx-auto px-8 relative z-10 h-full flex flex-col justify-end pb-24">
           <!-- Bottom Right Text -->
           <div class="self-end max-w-2xl text-right space-y-6">
-            <h2 class="text-5xl font-bold text-stone-100">跨界 · 赵州桥的弧光</h2>
+            <div class="text-amber-500 font-mono text-lg uppercase tracking-widest border-r-4 border-amber-600 pr-4">
+              公元605-616年 · 隋代 · 河北赵县
+            </div>
+            <h2 class="text-5xl font-bold text-stone-100">第四幕：跨界 · 赵州桥的弧光</h2>
             <p class="text-2xl text-stone-300 font-serif leading-loose">
               李春在洨河上建造的，不仅是一座桥，<br>
               更是一个关于<span class="text-amber-400">“连接”</span>的哲学宣言。
@@ -155,11 +154,9 @@ onUnmounted(() => {
           
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center h-full">
             <!-- Left: Structural Diagram with Hotspots -->
-            <div class="relative w-full aspect-square md:aspect-video lg:aspect-square flex items-center justify-center bg-stone-800 rounded-full border border-stone-700 shadow-2xl p-8 group" @click.stop>
-              <div class="text-center space-y-2 pointer-events-none">
-                <span class="text-stone-500 text-lg block">[中央主图：赵州桥结构拆解]</span>
-                <span class="text-amber-600 text-sm block">点击红点查看详情</span>
-              </div>
+            <div class="relative w-full aspect-video flex items-center justify-center bg-stone-800 rounded-xl border border-stone-700 shadow-2xl overflow-hidden group" @click.stop>
+               <img src="../assets/images/zhaozhouqiao2.jpg" alt="赵州桥结构拆解" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+               <div class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-amber-400 px-3 py-1 rounded-full text-xs font-bold pointer-events-none backdrop-blur-sm shadow-lg border border-amber-500/30 animate-pulse">点击红点查看详情</div>
               
               <!-- Interactive Hotspots -->
               <div 
@@ -172,15 +169,14 @@ onUnmounted(() => {
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
                 
-                <!-- Tooltip -->
+                <!-- Tooltip (Title Only) -->
                 <div 
                   v-if="activeHotspot === spot.id"
-                  class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-64 bg-stone-900/90 backdrop-blur border border-red-500/50 p-4 rounded shadow-xl z-20"
+                  class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 whitespace-nowrap bg-stone-900/90 backdrop-blur border border-red-500/50 px-4 py-2 rounded shadow-xl z-20"
                 >
-                  <h4 class="text-red-400 font-bold mb-1">{{ spot.title }}</h4>
-                  <p class="text-xs text-stone-300 leading-relaxed">{{ spot.desc }}</p>
+                  <h4 class="text-red-400 font-bold text-sm">{{ spot.title }}</h4>
                   <!-- Arrow -->
-                  <div class="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-stone-900/90"></div>
+                  <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-stone-900/90"></div>
                 </div>
               </div>
             </div>
@@ -188,12 +184,18 @@ onUnmounted(() => {
             <!-- Right: Analysis Points & Chart -->
             <div class="space-y-12">
                <!-- Analysis List (Static) -->
-               <div class="space-y-6 opacity-60 hover:opacity-100 transition-opacity duration-300">
-                 <div class="flex items-start space-x-4" v-for="(spot, index) in hotspots" :key="index">
+               <div class="space-y-6">
+                 <div 
+                   class="flex items-start space-x-4 transition-all duration-300 p-4 rounded-lg cursor-pointer" 
+                   v-for="(spot, index) in hotspots" 
+                   :key="index"
+                   :class="activeHotspot === spot.id ? 'bg-stone-800 scale-105 shadow-lg border border-amber-900/50' : 'opacity-60 hover:opacity-100'"
+                   @click="toggleHotspot(spot.id)"
+                 >
                    <div class="text-amber-500 font-bold text-xl">0{{ index + 1 }}.</div>
                    <div>
-                     <h4 class="text-xl font-bold text-amber-100 mb-1">{{ spot.title }}</h4>
-                     <p class="text-stone-400">{{ spot.desc }}</p>
+                     <h4 class="text-xl font-bold text-amber-100 mb-1" :class="activeHotspot === spot.id ? 'text-amber-400' : ''">{{ spot.title }}</h4>
+                     <p class="text-stone-400 text-sm">{{ spot.desc }}</p>
                    </div>
                  </div>
                </div>
