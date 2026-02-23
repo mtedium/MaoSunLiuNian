@@ -13,19 +13,24 @@ let _db
  */
 export function getDb() {
     if (!_db) {
-        // 确保 data 目录存在
-        const dir = resolve(process.cwd(), 'data')
-        if (!existsSync(dir)) {
-            mkdirSync(dir, { recursive: true })
+        try {
+            // 确保 data 目录存在
+            const dir = resolve(process.cwd(), 'data')
+            if (!existsSync(dir)) {
+                mkdirSync(dir, { recursive: true })
+            }
+
+            _db = new Database(dbPath)
+
+            // 启用 WAL 模式提升性能
+            _db.pragma('journal_mode = WAL')
+
+            // 初始化表结构
+            initTables()
+        } catch (error) {
+            console.error('[DB] Database initialization failed:', error)
+            throw error // 重新抛出错误，确保应用知晓数据库不可用
         }
-
-        _db = new Database(dbPath)
-
-        // 启用 WAL 模式提升性能
-        _db.pragma('journal_mode = WAL')
-
-        // 初始化表结构
-        initTables()
     }
     return _db
 }
@@ -55,5 +60,26 @@ function initTables() {
         ).run('admin', hashedPassword, '管理员')
 
         console.log('[DB] 默认管理员账号已创建 — 用户名: admin, 密码: admin123')
+    }
+
+    _db.exec(`
+    CREATE TABLE IF NOT EXISTS architectures (
+      id            INTEGER PRIMARY KEY AUTOINCREMENT,
+      name          TEXT    NOT NULL,
+      era           TEXT    NOT NULL,
+      lng           REAL    NOT NULL,
+      lat           REAL    NOT NULL,
+      description   TEXT    DEFAULT '',
+      article_count INTEGER DEFAULT 0
+    )
+    `)
+
+    const archCount = _db.prepare('SELECT COUNT(*) as count FROM architectures').get()
+    if (archCount.count === 0) {
+        const stmt = _db.prepare('INSERT INTO architectures (name, era, lng, lat, description, article_count) VALUES (?, ?, ?, ?, ?, ?)')
+        stmt.run('应县木塔', '辽代', 113.179, 39.554, '', 0)
+        stmt.run('佛光寺', '唐代', 113.385, 38.927, '', 0)
+        stmt.run('独乐寺', '辽代', 117.404, 40.046, '', 0)
+        console.log('[DB] 初始化古建测试数据（含应县木塔、佛光寺、独乐寺）')
     }
 }

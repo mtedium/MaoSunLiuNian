@@ -21,5 +21,13 @@ export default defineNuxtConfig({
     plugins: [
       tailwindcss()
     ]
+  },
+
+  // 运行时配置
+  runtimeConfig: {
+    public: {
+      amapKey: process.env.NUXT_PUBLIC_AMAP_KEY || '',
+      amapSecurityCode: process.env.NUXT_PUBLIC_AMAP_SECURITY_CODE || ''
+    }
   }
 })
