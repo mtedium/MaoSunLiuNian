@@ -70,7 +70,37 @@ function initTables() {
       lng           REAL    NOT NULL,
       lat           REAL    NOT NULL,
       description   TEXT    DEFAULT '',
-      article_count INTEGER DEFAULT 0
+      article_count INTEGER DEFAULT 0,
+      is_lit        BOOLEAN DEFAULT 0
+    )
+    `)
+
+    // 检查并添加缺失字段 (Schema Migration)
+    const columns = _db.prepare('PRAGMA table_info(architectures)').all()
+    const columnNames = columns.map(c => c.name)
+
+    if (!columnNames.includes('is_lit')) {
+        _db.prepare('ALTER TABLE architectures ADD COLUMN is_lit BOOLEAN DEFAULT 0').run()
+        console.log('[DB] Migrated: Added column is_lit to architectures')
+    }
+    if (!columnNames.includes('article_count')) {
+        _db.prepare('ALTER TABLE architectures ADD COLUMN article_count INTEGER DEFAULT 0').run()
+        console.log('[DB] Migrated: Added column article_count to architectures')
+    }
+
+    _db.exec(`
+    CREATE TABLE IF NOT EXISTS posts (
+      id              INTEGER PRIMARY KEY AUTOINCREMENT,
+      title           TEXT    NOT NULL,
+      content         TEXT,
+      cover_url       TEXT,
+      architecture_id INTEGER,
+      author_id       INTEGER,
+      likes           INTEGER DEFAULT 0,
+      is_featured     BOOLEAN DEFAULT 0,
+      created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (architecture_id) REFERENCES architectures(id),
+      FOREIGN KEY (author_id) REFERENCES users(id)
     )
     `)
 

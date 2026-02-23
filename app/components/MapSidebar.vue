@@ -144,15 +144,27 @@
                 <span class="text-stone-500">此地尚未有点亮记录，邀君首创</span>
               </div>
               
-              <NuxtLink 
-                :to="{ path: '/community/edit', query: { id: selectedArch.id, name: selectedArch.name } }"
-                class="w-full flex items-center justify-center space-x-2 bg-stone-800/40 hover:bg-stone-700/60 text-[#ffbf00] border border-[#ffbf00]/30 hover:border-[#ffbf00] py-2.5 px-4 rounded-md transition-all duration-300 group"
-              >
-                <span>{{ selectedArch.article_count === 0 ? '去发帖' : '前往社区考证录' }}</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </NuxtLink>
+              <div class="flex gap-2">
+                <NuxtLink 
+                  :to="{ path: '/community', query: { architecture_id: selectedArch.id } }"
+                  class="flex-1 flex items-center justify-center space-x-2 bg-stone-800/40 hover:bg-stone-700/60 text-[#ffbf00] border border-[#ffbf00]/30 hover:border-[#ffbf00] py-2.5 px-4 rounded-md transition-all duration-300 group"
+                >
+                  <span>{{ '去社区查看' }}</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </NuxtLink>
+
+                <NuxtLink 
+                  :to="`/consultant?q=${encodeURIComponent('请给我详细解释一下什么是' + selectedArch.name)}`"
+                  class="flex items-center justify-center px-4 bg-stone-800/40 hover:bg-amber-900/40 text-amber-500 border border-amber-500/30 hover:border-amber-500 rounded-md transition-all duration-300 group"
+                  title="问问大师"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                  </svg>
+                </NuxtLink>
+              </div>
             </div>
           </div>
         </Transition>

@@ -25,6 +25,9 @@ export default defineNuxtConfig({
 
   // 运行时配置
   runtimeConfig: {
+    aiApiKey: process.env.AI_API_KEY,
+    aiApiBase: process.env.AI_API_BASE,
+    aiModel: process.env.AI_MODEL,
     public: {
       amapKey: process.env.NUXT_PUBLIC_AMAP_KEY || '',
       amapSecurityCode: process.env.NUXT_PUBLIC_AMAP_SECURITY_CODE || ''

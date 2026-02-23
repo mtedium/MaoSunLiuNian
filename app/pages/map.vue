@@ -51,6 +51,8 @@ const fetchArchDetail = async (id) => {
   }
 }
 
+const route = useRoute()
+
 // 初始化地图
 onMounted(async () => {
   // 先获取点数据
@@ -76,6 +78,16 @@ onMounted(async () => {
     }
   }
 })
+
+// 监听路由 query 参数，实现从社区跳转回来的自动定位
+watch(() => route.query.focus_id, (newId) => {
+  if (newId && isLoaded.value) {
+    const arch = architectures.value.find(a => a.id == newId)
+    if (arch) {
+      handleArchSelect(arch)
+    }
+  }
+}, { immediate: true })
 
 onUnmounted(() => {
   if (mapInstance) {
@@ -118,6 +130,15 @@ const createMapInstance = () => {
     mapInstance.on('complete', () => {
       isLoaded.value = true
       renderMarkers()
+      
+      // 检查是否有 focus_id 需要自动定位
+      const focusId = route.query.focus_id
+      if (focusId) {
+        const arch = architectures.value.find(a => a.id == focusId)
+        if (arch) {
+          handleArchSelect(arch)
+        }
+      }
     })
     
     mapInstance.on('error', (e) => {
