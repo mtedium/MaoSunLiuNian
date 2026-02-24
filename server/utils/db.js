@@ -46,6 +46,7 @@ function initTables() {
       password   TEXT    NOT NULL,
       nickname   TEXT    DEFAULT '',
       avatar     TEXT    DEFAULT '',
+      role       TEXT    DEFAULT 'user',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
@@ -56,10 +57,21 @@ function initTables() {
     if (count.count === 0) {
         const hashedPassword = bcrypt.hashSync('admin123', 10)
         _db.prepare(
-            'INSERT INTO users (username, password, nickname) VALUES (?, ?, ?)'
-        ).run('admin', hashedPassword, '管理员')
+            'INSERT INTO users (username, password, nickname, role) VALUES (?, ?, ?, ?)'
+        ).run('admin', hashedPassword, '管理员', 'admin')
 
         console.log('[DB] 默认管理员账号已创建 — 用户名: admin, 密码: admin123')
+    }
+
+    // 检查并添加缺失字段 (Schema Migration - users)
+    const userColumns = _db.prepare('PRAGMA table_info(users)').all()
+    const userColumnNames = userColumns.map(c => c.name)
+
+    if (!userColumnNames.includes('role')) {
+        _db.prepare("ALTER TABLE users ADD COLUMN role TEXT DEFAULT 'user'").run()
+        // 更新现有 admin 用户为 admin 角色
+        _db.prepare("UPDATE users SET role = 'admin' WHERE username = 'admin'").run()
+        console.log('[DB] Migrated: Added column role to users')
     }
 
     _db.exec(`
@@ -98,9 +110,31 @@ function initTables() {
       author_id       INTEGER,
       likes           INTEGER DEFAULT 0,
       is_featured     BOOLEAN DEFAULT 0,
+      status          TEXT    DEFAULT 'published',
       created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (architecture_id) REFERENCES architectures(id),
       FOREIGN KEY (author_id) REFERENCES users(id)
+    )
+    `)
+
+    // 检查并添加缺失字段 (Schema Migration - posts)
+    const postColumns = _db.prepare('PRAGMA table_info(posts)').all()
+    const postColumnNames = postColumns.map(c => c.name)
+
+    if (!postColumnNames.includes('status')) {
+        _db.prepare("ALTER TABLE posts ADD COLUMN status TEXT DEFAULT 'published'").run()
+        console.log('[DB] Migrated: Added column status to posts')
+    }
+
+    _db.exec(`
+    CREATE TABLE IF NOT EXISTS collections (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id    INTEGER NOT NULL,
+      type       TEXT    NOT NULL, -- 'post' or 'architecture'
+      target_id  INTEGER NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id),
+      UNIQUE(user_id, type, target_id)
     )
     `)
 

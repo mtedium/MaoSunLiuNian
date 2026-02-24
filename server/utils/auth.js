@@ -1,6 +1,6 @@
+import { verifyToken } from './jwt'
 
-
-export default defineEventHandler(async (event) => {
+export const getUser = (event) => {
     const authHeader = getHeader(event, 'authorization')
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -30,10 +30,16 @@ export default defineEventHandler(async (event) => {
         })
     }
 
-    return {
-        code: 200,
-        data: {
-            user
-        }
+    return user
+}
+
+export const requireAdmin = (event) => {
+    const user = getUser(event)
+    if (user.role !== 'admin') {
+        throw createError({
+            statusCode: 403,
+            statusMessage: '权限不足，仅管理员可访问'
+        })
     }
-})
+    return user
+}
