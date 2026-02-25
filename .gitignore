@@ -25,3 +25,7 @@ logs
 
 # Database
 data/
+
+.plan/
+scripts/
+

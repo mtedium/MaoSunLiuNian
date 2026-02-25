@@ -284,6 +284,23 @@ async function saveArch() {
                                     <label class="text-xs text-stone-500">朝代</label>
                                     <input v-model="editingArch.era" type="text" class="w-full bg-stone-950 border border-stone-800 rounded p-2 text-stone-200 focus:border-amber-500 outline-none">
                                 </div>
+                                
+                                <!-- 新增：行政区划 -->
+                                <div class="col-span-2 grid grid-cols-3 gap-2">
+                                    <div class="space-y-2">
+                                        <label class="text-xs text-stone-500">省份</label>
+                                        <input v-model="editingArch.province" type="text" class="w-full bg-stone-950 border border-stone-800 rounded p-2 text-stone-200 focus:border-amber-500 outline-none">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-xs text-stone-500">城市</label>
+                                        <input v-model="editingArch.city" type="text" class="w-full bg-stone-950 border border-stone-800 rounded p-2 text-stone-200 focus:border-amber-500 outline-none">
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-xs text-stone-500">区县</label>
+                                        <input v-model="editingArch.district" type="text" class="w-full bg-stone-950 border border-stone-800 rounded p-2 text-stone-200 focus:border-amber-500 outline-none">
+                                    </div>
+                                </div>
+
                                 <div class="col-span-1 space-y-2">
                                     <label class="text-xs text-stone-500">经度 (Lng)</label>
                                     <input v-model.number="editingArch.lng" type="number" step="0.000001" class="w-full bg-stone-950 border border-stone-800 rounded p-2 text-stone-200 focus:border-amber-500 outline-none">
@@ -295,7 +312,13 @@ async function saveArch() {
                             </div>
 
                             <div class="space-y-2">
-                                <label class="text-xs text-stone-500">AI 简介 / 描述</label>
+                                <div class="flex justify-between items-end">
+                                    <label class="text-xs text-stone-500">AI 简介 / 描述</label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" v-model="editingArch.is_ai_generated" :true-value="1" :false-value="0" class="accent-amber-600">
+                                        <span class="text-xs text-stone-500">标记为 AI 生成内容</span>
+                                    </label>
+                                </div>
                                 <textarea 
                                     v-model="editingArch.description" 
                                     rows="10" 

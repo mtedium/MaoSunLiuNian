@@ -28,6 +28,8 @@ export default defineNuxtConfig({
     aiApiKey: process.env.AI_API_KEY,
     aiApiBase: process.env.AI_API_BASE,
     aiModel: process.env.AI_MODEL,
+    aiModelMap: process.env.AI_MODEL_MAP,
+    
     public: {
       amapKey: process.env.NUXT_PUBLIC_AMAP_KEY || '',
       amapSecurityCode: process.env.NUXT_PUBLIC_AMAP_SECURITY_CODE || ''

@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // 可更新的字段
-    const allowedFields = ['name', 'era', 'lng', 'lat', 'description']
+    const allowedFields = ['name', 'era', 'lng', 'lat', 'description', 'province', 'city', 'district', 'is_ai_generated']
     const updates = []
     const params = []
 

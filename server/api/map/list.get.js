@@ -4,7 +4,7 @@ export default defineEventHandler((event) => {
     try {
         const db = getDb()
         // 只需获取必要信息用于地图展示
-        const list = db.prepare('SELECT id, name, era, lng, lat, is_lit, article_count FROM architectures').all()
+        const list = db.prepare('SELECT id, name, era, lng, lat, province, city, district, is_lit, article_count FROM architectures').all()
 
         return {
             code: 200,

@@ -15,21 +15,30 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 404, statusMessage: 'Architecture not found' })
     }
 
-    // 如果简介为空，调用 AI 接口获取并更新数据库
-    if (!arch.description) {
+    // 如果简介为空，或者虽然不为空但不是AI生成的（即可能是上次fallback生成的废话），尝试调用 AI 接口
+    // 判断逻辑：如果 is_ai_generated 为 0，说明它是默认文案或者空，需要重新生成
+    if (!arch.description || !arch.is_ai_generated) {
         let newDescription = ''
+        let isSuccess = false
+
         try {
-            // 尝试调用 AI 接口生成简介
-            const apiKey = process.env.OPENAI_API_KEY || ''
+            // 尝试调用 AI 接口生成简介 (Kimi / Moonshot)
+            const config = useRuntimeConfig()
+            const apiKey = config.aiApiKey || process.env.AI_API_KEY
+            const apiBase = config.aiApiBase || process.env.AI_API_BASE
+            const apiModel = config.aiModelMap || process.env.AI_MODEL_MAP
+
+
+
             if (apiKey) {
-                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                const response = await fetch(`${apiBase}/chat/completions`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${apiKey}`
                     },
                     body: JSON.stringify({
-                        model: 'gpt-3.5-turbo',
+                        model: apiModel, // 使用 Kimi 的模型
                         messages: [
                             {
                                 role: 'system',
@@ -37,9 +46,10 @@ export default defineEventHandler(async (event) => {
                             },
                             {
                                 role: 'user',
-                                content: `古建筑：${arch.name}，朝代：${arch.era}`
+                                content: `古建筑：${arch.name}，朝代：${arch.era}，位置：${arch.province}${arch.city}${arch.district}`
                             }
-                        ]
+                        ],
+                        temperature: 0.3
                     })
                 })
 
@@ -47,27 +57,37 @@ export default defineEventHandler(async (event) => {
                     const data = await response.json()
                     if (data.choices && data.choices[0]?.message?.content) {
                         newDescription = data.choices[0].message.content.trim()
+                        isSuccess = true
                     } else {
                         throw new Error('Invalid response payload')
                     }
                 } else {
-                    throw new Error(`AI API failed with status ${response.status}`)
+                    const errorText = await response.text()
+                    throw new Error(`AI API failed with status ${response.status}: ${errorText}`)
                 }
             } else {
                 // 如果没有配置API KEY，故意抛错进入 fallback
-                throw new Error('No API Key configured, fallback to default text.')
+                throw new Error('No AI API Key configured')
             }
         } catch (error) {
             console.error('[AI Detail API] 获取AI简介失败:', error.message)
-            // 异常处理：返回预设默认文案，不要阻断
-            newDescription = `${arch.name}（${arch.era}）是现存极为珍贵的古建筑实例，体现了当时最高水准的木构技术和榫卯工艺。其精巧的梁架体系与斗栱结构，展现了古典营造法则在空间与受力上的完美融合，具有极高的历史与科学价值。`
+            // 异常处理：只有当简介完全为空时，才填入 fallback 文案
+            // 如果原本就有（比如上次生成的），就保留原样，不覆盖
+            if (!arch.description) {
+                newDescription = `${arch.name}（${arch.era}）是现存极为珍贵的古建筑实例，体现了当时最高水准的木构技术和榫卯工艺。其精巧的梁架体系与斗栱结构，展现了古典营造法则在空间与受力上的完美融合，具有极高的历史与科学价值。`
+                isSuccess = false // 标记为非 AI 生成
+            }
         }
 
-        // 无论是成功通过AI生成，还是使用了默认 fallback 文案，都更新到数据库中并返回
+        // 更新数据库
         if (newDescription) {
-            const stmt = db.prepare('UPDATE architectures SET description = ? WHERE id = ?')
-            stmt.run(newDescription, id)
+            const stmt = db.prepare('UPDATE architectures SET description = ?, is_ai_generated = ? WHERE id = ?')
+            const isAiGenerated = isSuccess ? 1 : 0
+            stmt.run(newDescription, isAiGenerated, id)
+            
+            // 更新返回对象
             arch.description = newDescription
+            arch.is_ai_generated = isAiGenerated
         }
     }
 

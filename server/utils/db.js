@@ -76,14 +76,18 @@ function initTables() {
 
     _db.exec(`
     CREATE TABLE IF NOT EXISTS architectures (
-      id            INTEGER PRIMARY KEY AUTOINCREMENT,
-      name          TEXT    NOT NULL,
-      era           TEXT    NOT NULL,
-      lng           REAL    NOT NULL,
-      lat           REAL    NOT NULL,
-      description   TEXT    DEFAULT '',
-      article_count INTEGER DEFAULT 0,
-      is_lit        BOOLEAN DEFAULT 0
+      id              INTEGER PRIMARY KEY AUTOINCREMENT,
+      name            TEXT    NOT NULL,
+      era             TEXT    NOT NULL,
+      province        TEXT    DEFAULT '',
+      city            TEXT    DEFAULT '',
+      district        TEXT    DEFAULT '',
+      lng             REAL    NOT NULL,
+      lat             REAL    NOT NULL,
+      description     TEXT    DEFAULT '',
+      article_count   INTEGER DEFAULT 0,
+      is_lit          BOOLEAN DEFAULT 0,
+      is_ai_generated BOOLEAN DEFAULT 0
     )
     `)
 
@@ -91,14 +95,22 @@ function initTables() {
     const columns = _db.prepare('PRAGMA table_info(architectures)').all()
     const columnNames = columns.map(c => c.name)
 
-    if (!columnNames.includes('is_lit')) {
-        _db.prepare('ALTER TABLE architectures ADD COLUMN is_lit BOOLEAN DEFAULT 0').run()
-        console.log('[DB] Migrated: Added column is_lit to architectures')
+    const newFields = ['is_lit', 'article_count', 'province', 'city', 'district', 'is_ai_generated']
+    const fieldTypes = {
+        is_lit: 'BOOLEAN DEFAULT 0',
+        article_count: 'INTEGER DEFAULT 0',
+        province: "TEXT DEFAULT ''",
+        city: "TEXT DEFAULT ''",
+        district: "TEXT DEFAULT ''",
+        is_ai_generated: "BOOLEAN DEFAULT 0"
     }
-    if (!columnNames.includes('article_count')) {
-        _db.prepare('ALTER TABLE architectures ADD COLUMN article_count INTEGER DEFAULT 0').run()
-        console.log('[DB] Migrated: Added column article_count to architectures')
-    }
+
+    newFields.forEach(field => {
+        if (!columnNames.includes(field)) {
+            _db.prepare(`ALTER TABLE architectures ADD COLUMN ${field} ${fieldTypes[field]}`).run()
+            console.log(`[DB] Migrated: Added column ${field} to architectures`)
+        }
+    })
 
     _db.exec(`
     CREATE TABLE IF NOT EXISTS posts (

@@ -69,7 +69,7 @@ onMounted(async () => {
       AMapLib = await AMapLoader.load({
         key: AMAP_KEY,
         version: '2.0',
-        plugins: [],
+        plugins: ['AMap.MarkerCluster'], // 引入聚合插件
       })
       initMap()
     } catch (e) {
@@ -129,7 +129,7 @@ const createMapInstance = () => {
 
     mapInstance.on('complete', () => {
       isLoaded.value = true
-      renderMarkers()
+      initCluster() // 初始化聚合
       
       // 检查是否有 focus_id 需要自动定位
       const focusId = route.query.focus_id
@@ -152,65 +152,99 @@ const createMapInstance = () => {
   }
 }
 
-let mapMarkerInstances = {} // 存储 { id: Marker }
+let clusterInstance = null
 
-// 渲染 Marker 点位
-const renderMarkers = () => {
-  if (!mapInstance || !AMapLib) return
-  
-  // 清理旧的
-  Object.values(mapMarkerInstances).forEach(m => m.setMap(null))
-  mapMarkerInstances = {}
+// 初始化点聚合
+const initCluster = () => {
+    if (!mapInstance || !AMapLib) return
 
-  architectures.value.forEach(arch => {
-    if (arch.lng && arch.lat) {
-      // 工业古风暗黑图标样式
-      const markerContent = `
+    // 构造聚合点数据
+    const points = architectures.value
+        .filter(arch => arch.lng && arch.lat)
+        .map(arch => ({
+            lnglat: [arch.lng, arch.lat],
+            extData: arch // 挂载原始数据
+        }))
+
+    // 自定义聚合样式
+    // 1. 单个点的样式 (非聚合状态)
+    const _renderMarker = (context) => {
+        const arch = context.data[0].extData
+        const isSelected = selectedArch.value && selectedArch.value.id === arch.id
+        
+        // 工业古风暗黑图标样式
+        const content = `
         <div class="relative w-8 h-8 flex items-center justify-center cursor-pointer group hover:scale-110 transition-transform">
-          <div class="absolute inset-0 bg-[#ffbf00]/20 rounded-full animate-ping"></div>
-          <div class="w-6 h-6 bg-black border-2 border-[#ffbf00] rounded-full flex items-center justify-center z-10 shadow-[0_0_10px_rgba(255,191,0,0.6)]">
+          <div class="absolute inset-0 bg-[#ffbf00]/20 rounded-full ${isSelected ? 'animate-ping' : ''}"></div>
+          <div class="w-6 h-6 bg-black border-2 ${isSelected ? 'border-white' : 'border-[#ffbf00]'} rounded-full flex items-center justify-center z-10 shadow-[0_0_10px_rgba(255,191,0,0.6)]">
              <div class="w-2 h-2 bg-[#ffbf00] rounded-full"></div>
           </div>
         </div>
       `
-
-      const marker = new AMapLib.Marker({
-        position: new AMapLib.LngLat(arch.lng, arch.lat),
-        content: markerContent,
-        offset: new AMapLib.Pixel(-16, -16), // 让点居中
-        title: arch.name,
-        map: mapInstance,
-        extData: arch // 将原数据绑上去
-      })
-
-      mapMarkerInstances[arch.id] = marker
-
-      // 地图点位点击交互
-      marker.on('click', () => {
-        handleArchSelect(arch)
-      })
+        context.marker.setContent(content)
+        context.marker.setOffset(new AMapLib.Pixel(-16, -16))
+        
+        // 绑定点击事件
+        context.marker.on('click', () => {
+            handleArchSelect(arch)
+        })
     }
-  })
+
+    // 2. 聚合点的样式 (聚合状态)
+    const _renderCluster = (context) => {
+        const count = context.count
+        const size = Math.min(30 + count * 0.5, 60) // 大小随数量微调
+        
+        const div = document.createElement('div');
+        div.style.width = size + 'px';
+        div.style.height = size + 'px';
+        div.style.borderRadius = '50%';
+        div.style.backgroundColor = 'rgba(0,0,0,0.8)';
+        div.style.border = '2px solid #ffbf00';
+        div.style.color = '#ffbf00';
+        div.style.display = 'flex';
+        div.style.alignItems = 'center';
+        div.style.justifyContent = 'center';
+        div.style.fontSize = '12px';
+        div.style.boxShadow = '0 0 10px rgba(255,191,0,0.4)';
+        div.innerHTML = count;
+        
+        context.marker.setContent(div)
+        context.marker.setOffset(new AMapLib.Pixel(-size/2, -size/2))
+    }
+
+    if (clusterInstance) {
+        clusterInstance.setData(points)
+    } else {
+        clusterInstance = new AMapLib.MarkerCluster(mapInstance, points, {
+            gridSize: 60, // 聚合网格像素大小
+            renderMarker: _renderMarker, // 自定义非聚合点
+            renderClusterMarker: _renderCluster, // 自定义聚合点
+        })
+        
+        // 监听聚合点的点击（默认行为是放大，这里可以加额外逻辑）
+    }
 }
 
-// 侧边栏筛选变化时增删地图点显隐
+// 侧边栏筛选变化时增删地图点显隐 -> 更新聚合数据
 const updateMapMarkers = (visibleIds) => {
-  if (!mapInstance || !AMapLib) return
-  Object.keys(mapMarkerInstances).forEach(id => {
-    const numId = Number(id)
-    if (visibleIds.includes(numId)) {
-      mapMarkerInstances[id].show()
-    } else {
-      mapMarkerInstances[id].hide()
-    }
-  })
+  if (!clusterInstance || !AMapLib) return
+  
+  const filteredPoints = architectures.value
+    .filter(arch => visibleIds.includes(arch.id) && arch.lng && arch.lat)
+    .map(arch => ({
+        lnglat: [arch.lng, arch.lat],
+        extData: arch
+    }))
+    
+  clusterInstance.setData(filteredPoints)
 }
 
 // 从地图或侧边栏点击一个建筑时触发的联动
 const handleArchSelect = (arch) => {
   // 平滑移动地图至目标点
   if (mapInstance && AMapLib) {
-    mapInstance.setZoomAndCenter(7, new AMapLib.LngLat(arch.lng, arch.lat), false, 1000)
+    mapInstance.setZoomAndCenter(12, new AMapLib.LngLat(arch.lng, arch.lat), false, 1000)
   }
   
   // 设置侧边栏过渡

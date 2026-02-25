@@ -1,11 +1,11 @@
-import { streamText } from 'h3'
+
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   
   const apiKey = config.aiApiKey
   const apiBase = config.aiApiBase
-  const apiModel = config.aiModel
+  const apiModel = config.aiModel || process.env.AI_MODEL
 
   if (!apiKey) {
     throw createError({
