@@ -38,11 +38,11 @@ const handleLogout = () => {
 <template>
   <!-- 
     调整说明：
-    1. 背景色调亮：bg-stone-900/95 -> bg-stone-800/90
-    2. 边框颜色调亮：border-stone-800/50 -> border-stone-700/60
+    1. 背景色调亮：bg-bg-surface/95 -> bg-bg-elevated/90
+    2. 边框颜色调亮：border-border-default/50 -> border-border-subtle/60
     3. 去掉 container mx-auto，改为 w-full px-6 md:px-10，使内容更贴近边缘
   -->
-  <nav class="fixed top-0 left-0 w-full z-50 bg-stone-900/95 backdrop-blur-md border-b border-stone-700/30 shadow-lg">
+  <nav class="fixed top-0 left-0 w-full z-50 bg-bg-surface/95 backdrop-blur-md border-b border-border-subtle/30 shadow-lg">
     <div class="w-full px-4 md:px-10 h-20 flex items-center justify-between relative">
       <!-- 品牌标识 -->
       <NuxtLink to="/" class="flex items-center gap-4 group" @click="handleNavClick('/')">
@@ -53,7 +53,7 @@ const handleLogout = () => {
         
         <div class="flex flex-col justify-center h-full">
           <!-- 字体颜色调亮 -->
-          <span class="text-2xl font-serif font-medium text-stone-100 tracking-[0.2em] group-hover:text-amber-400 transition-colors duration-500">
+          <span class="text-2xl font-serif font-medium text-text-primary tracking-[0.2em] group-hover:text-amber-400 transition-colors duration-500">
             榫卯流年
           </span>
         </div>
@@ -71,7 +71,7 @@ const handleLogout = () => {
           <!-- 文本 - 极简雅致 -->
           <span 
             class="text-lg font-serif tracking-widest transition-colors duration-300"
-            :class="isActive(item.path) ? 'text-stone-100 font-medium' : 'text-stone-400 group-hover:text-stone-300'"
+            :class="isActive(item.path) ? 'text-text-primary font-medium' : 'text-text-secondary group-hover:text-text-secondary'"
           >
             {{ item.name }}
           </span>
@@ -91,7 +91,7 @@ const handleLogout = () => {
           >
             <span 
               class="text-lg font-serif tracking-widest transition-colors duration-300"
-              :class="isActive('/profile') ? 'text-stone-100 font-medium' : 'text-stone-400 group-hover:text-stone-300'"
+              :class="isActive('/profile') ? 'text-text-primary font-medium' : 'text-text-secondary group-hover:text-text-secondary'"
             >
               {{ authStore.displayName }}
             </span>
@@ -102,7 +102,7 @@ const handleLogout = () => {
           </NuxtLink>
           <button
             @click="handleLogout"
-            class="text-stone-500 hover:text-red-400 text-sm font-serif tracking-wider transition-colors duration-300"
+            class="text-text-muted hover:text-red-400 text-sm font-serif tracking-wider transition-colors duration-300"
           >
             退出
           </button>
@@ -114,7 +114,7 @@ const handleLogout = () => {
         >
           <span 
             class="text-lg font-serif tracking-widest transition-colors duration-300"
-            :class="isActive('/login') ? 'text-stone-100 font-medium' : 'text-stone-400 group-hover:text-stone-300'"
+            :class="isActive('/login') ? 'text-text-primary font-medium' : 'text-text-secondary group-hover:text-text-secondary'"
           >
             登录
           </span>
@@ -123,10 +123,14 @@ const handleLogout = () => {
             :class="isActive('/login') ? 'w-4 opacity-100' : 'w-0 opacity-0'"
           ></span>
         </NuxtLink>
+
+        <!-- 主题切换 -->
+        <ThemeSwitcher />
       </div>
 
       <!-- 移动端菜单按钮 -->
-      <div class="md:hidden text-stone-300">
+      <div class="md:hidden flex items-center gap-2 text-text-secondary">
+        <ThemeSwitcher />
         <button class="p-2 hover:text-amber-400 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />

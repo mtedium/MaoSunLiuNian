@@ -51,6 +51,22 @@ export default defineEventHandler(async (event) => {
     
     db.prepare(sql).run(...params)
 
+    // 更新点亮状态逻辑
+    if (body.architecture_id !== undefined && existingPost.architecture_id !== body.architecture_id) {
+      // 1. 如果旧关联存在，检查是否需要取消点亮
+      if (existingPost.architecture_id) {
+        const count = db.prepare('SELECT COUNT(*) as count FROM posts WHERE architecture_id = ?').get(existingPost.architecture_id).count
+        if (count === 0) {
+          db.prepare('UPDATE architectures SET is_lit = 0 WHERE id = ?').run(existingPost.architecture_id)
+        }
+      }
+      
+      // 2. 如果新关联存在，设置为点亮
+      if (body.architecture_id) {
+        db.prepare('UPDATE architectures SET is_lit = 1 WHERE id = ?').run(body.architecture_id)
+      }
+    }
+
     const updatedPost = db.prepare('SELECT * FROM posts WHERE id = ?').get(id)
     return {
       ...updatedPost,

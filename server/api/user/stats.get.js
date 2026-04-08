@@ -1,4 +1,5 @@
 import { getUser } from '../../utils/auth'
+import { getDb } from '../../utils/db'
 
 export default defineEventHandler(async (event) => {
     const user = getUser(event)

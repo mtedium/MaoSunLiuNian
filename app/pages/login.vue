@@ -51,7 +51,7 @@ async function handleLogin() {
 
 <template>
   <!-- 全屏登录页 -->
-  <div class="fixed inset-0 z-[60] flex items-center justify-center min-h-screen bg-stone-950 overflow-hidden">
+  <div class="fixed inset-0 z-[60] flex items-center justify-center min-h-screen bg-bg-base overflow-hidden">
 
     <!-- 背景装饰 -->
     <div class="absolute inset-0 pointer-events-none overflow-hidden">
@@ -65,7 +65,7 @@ async function handleLogin() {
       <!-- 冷色光晕 - 右下 -->
       <div class="absolute -bottom-32 -right-32 w-80 h-80 bg-red-900/8 rounded-full blur-[100px] animate-pulse-slow" style="animation-delay: 2s;"></div>
       <!-- 中心微光 -->
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-stone-800/20 rounded-full blur-[150px]"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-bg-elevated/20 rounded-full blur-[150px]"></div>
 
       <!-- 装饰线条 -->
       <div class="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-stone-700/10 to-transparent"></div>
@@ -78,26 +78,26 @@ async function handleLogin() {
       <!-- 品牌标识区域 -->
       <div class="text-center mb-12">
         <!-- 印章图标 -->
-        <div class="inline-flex items-center justify-center w-16 h-16 bg-red-800/80 rounded-sm border border-red-700/60 shadow-[0_0_30px_rgba(185,28,28,0.25)] mb-6 hover:scale-105 transition-transform duration-700">
-          <span class="text-stone-50 font-serif text-2xl font-bold">卯</span>
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-red-800/90 rounded-sm border border-red-700/60 shadow-[0_0_30px_rgba(185,28,28,0.4)] mb-6 hover:scale-105 transition-transform duration-700">
+          <span class="text-white font-serif text-2xl font-bold">卯</span>
         </div>
 
-        <h1 class="text-4xl font-serif font-medium text-stone-100 tracking-[0.25em] mb-3">
+        <h1 class="text-4xl font-serif font-medium text-text-primary tracking-[0.25em] mb-3">
           榫卯流年
         </h1>
-        <p class="text-stone-500 text-sm tracking-widest font-light">
+        <p class="text-text-muted text-sm tracking-widest font-light">
           一凹一凸 · 阴阳咬合
         </p>
       </div>
 
       <!-- 表单卡片 -->
-      <div class="relative bg-stone-900/60 backdrop-blur-xl border border-stone-700/30 rounded-2xl p-8 md:p-10 shadow-2xl shadow-black/30">
+      <div class="relative bg-bg-surface/60 backdrop-blur-xl border border-border-subtle/30 rounded-2xl p-8 md:p-10 shadow-2xl shadow-black/30">
 
         <!-- 卡片顶部装饰线 -->
         <div class="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-amber-800/40 to-transparent"></div>
 
         <!-- 标题 -->
-        <h2 class="text-xl font-serif text-stone-200 tracking-wider mb-8 text-center">
+        <h2 class="text-xl font-serif text-text-primary tracking-wider mb-8 text-center">
           登录
         </h2>
 
@@ -123,11 +123,11 @@ async function handleLogin() {
 
           <!-- 用户名 -->
           <div class="group">
-            <label for="login-username" class="block text-xs text-stone-400 tracking-widest uppercase mb-2 font-light">
+            <label for="login-username" class="block text-xs text-text-secondary tracking-widest uppercase mb-2 font-light">
               用户名
             </label>
             <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-stone-500 group-focus-within:text-amber-600/70 transition-colors duration-300">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-text-muted group-focus-within:text-amber-600/70 transition-colors duration-300">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
                 </svg>
@@ -138,8 +138,8 @@ async function handleLogin() {
                 type="text"
                 autocomplete="username"
                 placeholder="请输入用户名"
-                class="w-full pl-12 pr-4 py-3.5 bg-stone-800/50 border border-stone-700/40 rounded-xl text-stone-200 placeholder-stone-600 text-sm tracking-wide
-                       focus:outline-none focus:border-amber-800/50 focus:bg-stone-800/70 focus:ring-1 focus:ring-amber-900/30
+                class="w-full pl-12 pr-4 py-3.5 bg-bg-elevated/50 border border-border-subtle/40 rounded-xl text-text-primary placeholder-stone-600 text-sm tracking-wide
+                       focus:outline-none focus:border-amber-800/50 focus:bg-bg-elevated/70 focus:ring-1 focus:ring-amber-900/30
                        transition-all duration-300"
               />
             </div>
@@ -147,11 +147,11 @@ async function handleLogin() {
 
           <!-- 密码 -->
           <div class="group">
-            <label for="login-password" class="block text-xs text-stone-400 tracking-widest uppercase mb-2 font-light">
+            <label for="login-password" class="block text-xs text-text-secondary tracking-widest uppercase mb-2 font-light">
               密码
             </label>
             <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-stone-500 group-focus-within:text-amber-600/70 transition-colors duration-300">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-text-muted group-focus-within:text-amber-600/70 transition-colors duration-300">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
                 </svg>
@@ -162,14 +162,14 @@ async function handleLogin() {
                 :type="showPassword ? 'text' : 'password'"
                 autocomplete="current-password"
                 placeholder="请输入密码"
-                class="w-full pl-12 pr-12 py-3.5 bg-stone-800/50 border border-stone-700/40 rounded-xl text-stone-200 placeholder-stone-600 text-sm tracking-wide
-                       focus:outline-none focus:border-amber-800/50 focus:bg-stone-800/70 focus:ring-1 focus:ring-amber-900/30
+                class="w-full pl-12 pr-12 py-3.5 bg-bg-elevated/50 border border-border-subtle/40 rounded-xl text-text-primary placeholder-stone-600 text-sm tracking-wide
+                       focus:outline-none focus:border-amber-800/50 focus:bg-bg-elevated/70 focus:ring-1 focus:ring-amber-900/30
                        transition-all duration-300"
               />
               <!-- 密码可见切换 -->
               <button
                 type="button"
-                class="absolute inset-y-0 right-0 pr-4 flex items-center text-stone-500 hover:text-stone-300 transition-colors duration-300"
+                class="absolute inset-y-0 right-0 pr-4 flex items-center text-text-muted hover:text-text-secondary transition-colors duration-300"
                 @click="showPassword = !showPassword"
               >
                 <svg v-if="!showPassword" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -188,7 +188,7 @@ async function handleLogin() {
             id="login-submit"
             type="submit"
             :disabled="isLoading"
-            class="relative w-full py-3.5 mt-2 bg-gradient-to-r from-red-900/80 via-red-800/80 to-red-900/80 text-stone-100 font-serif text-base tracking-[0.2em] rounded-xl
+            class="relative w-full py-3.5 mt-2 bg-gradient-to-r from-red-900/80 via-red-800/80 to-red-900/80 text-text-primary font-serif text-base tracking-[0.2em] rounded-xl
                    border border-red-700/30
                    hover:from-red-800/90 hover:via-red-700/90 hover:to-red-800/90 hover:border-red-600/40 hover:shadow-[0_0_25px_rgba(185,28,28,0.2)]
                    active:scale-[0.98]
@@ -211,8 +211,8 @@ async function handleLogin() {
         </form>
 
         <!-- 底部装饰线 -->
-        <div class="mt-8 pt-6 border-t border-stone-800/40 text-center">
-          <p class="text-stone-600 text-xs tracking-wider font-light">
+        <div class="mt-8 pt-6 border-t border-border-default/40 text-center">
+          <p class="text-text-muted text-xs tracking-wider font-light">
             不用一钉一铆，让木头与木头对话
           </p>
         </div>
@@ -222,7 +222,7 @@ async function handleLogin() {
       <div class="text-center mt-8">
         <NuxtLink
           to="/"
-          class="inline-flex items-center gap-2 text-stone-500 hover:text-stone-300 text-sm tracking-wider transition-colors duration-300 group"
+          class="inline-flex items-center gap-2 text-text-muted hover:text-text-secondary text-sm tracking-wider transition-colors duration-300 group"
         >
           <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/>

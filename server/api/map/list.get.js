@@ -3,8 +3,13 @@ import { getDb } from '../../utils/db'
 export default defineEventHandler((event) => {
     try {
         const db = getDb()
-        // 只需获取必要信息用于地图展示
-        const list = db.prepare('SELECT id, name, era, lng, lat, province, city, district, is_lit, article_count FROM architectures').all()
+        // 只需获取必要信息用于地图展示，并联表查询文章数量
+        const list = db.prepare(`
+            SELECT a.id, a.name, a.era, a.lng, a.lat, a.province, a.city, a.district, a.is_lit, COUNT(p.id) as article_count 
+            FROM architectures a
+            LEFT JOIN posts p ON a.id = p.architecture_id
+            GROUP BY a.id
+        `).all()
 
         return {
             code: 200,

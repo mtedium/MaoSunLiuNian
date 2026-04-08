@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-stone-900 text-stone-200 p-8 pt-24">
+  <div class="min-h-screen bg-bg-surface text-text-primary p-8 pt-24">
     <div v-if="pending" class="flex justify-center pt-20">
       <div class="animate-spin text-4xl">⏳</div>
     </div>
@@ -8,11 +8,11 @@
       文章加载失败：{{ error.message }}
     </div>
 
-    <article v-else class="max-w-3xl mx-auto bg-stone-800/30 p-8 rounded-2xl border border-stone-800 shadow-2xl">
+    <article v-else class="max-w-3xl mx-auto bg-bg-surface dark:bg-bg-elevated/30 p-8 rounded-2xl border border-border-default dark:border-border-subtle shadow-2xl">
       <!-- 头部信息 -->
-      <header class="mb-8 border-b border-stone-700/50 pb-6">
+      <header class="mb-8 border-b border-border-default dark:border-border-subtle/50 pb-6">
         <div class="flex justify-between items-start mb-4">
-          <h1 class="text-3xl md:text-4xl font-bold font-serif text-amber-500 leading-tight">
+          <h1 class="text-3xl md:text-4xl font-bold font-serif text-amber-600 dark:text-amber-500 leading-tight">
             {{ post.title }}
           </h1>
           
@@ -20,15 +20,15 @@
           <NuxtLink 
             v-if="canEdit" 
             :to="`/community/edit?id=${post.id}`"
-            class="shrink-0 ml-4 px-3 py-1 text-sm bg-stone-700 hover:bg-stone-600 rounded text-stone-300 transition-colors"
+            class="shrink-0 ml-4 px-3 py-1 text-sm bg-bg-elevated dark:bg-border-subtle hover:bg-border-default rounded text-text-secondary transition-colors border border-border-default dark:border-transparent"
           >
             ✏️ 编辑
           </NuxtLink>
         </div>
 
-        <div class="flex flex-wrap items-center gap-4 text-sm text-stone-400">
+        <div class="flex flex-wrap items-center gap-4 text-sm text-text-secondary">
           <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-full bg-stone-600 flex items-center justify-center text-stone-300">
+            <div class="w-8 h-8 rounded-full bg-bg-elevated dark:bg-border-default flex items-center justify-center text-text-secondary border border-border-default dark:border-transparent">
               {{ post.author_id === 1 ? '管' : 'U' }}
             </div>
             <span>{{ formatDate(post.created_at) }}</span>
@@ -36,7 +36,7 @@
 
           <div v-if="post.architecture_id" class="flex items-center gap-3">
             <!-- 建筑标签 -->
-            <div class="flex items-center gap-1 text-amber-400/80 bg-amber-900/20 px-2 py-1 rounded">
+            <div class="flex items-center gap-1 text-amber-600 dark:text-amber-400/80 bg-amber-50 dark:bg-amber-900/20 px-2 py-1 rounded">
               <span>📍</span>
               <span>{{ architectureName || `古建 #${post.architecture_id}` }}</span>
             </div>
@@ -45,7 +45,7 @@
             <div class="flex items-center gap-2">
               <NuxtLink 
                 :to="{ path: '/map', query: { focus_id: post.architecture_id } }"
-                class="text-xs border border-amber-400/30 px-2 py-1 rounded hover:bg-amber-400/10 transition-colors flex items-center gap-1"
+                class="text-xs border border-amber-600/30 dark:border-amber-400/30 px-2 py-1 rounded hover:bg-amber-50 dark:hover:bg-amber-400/10 transition-colors flex items-center gap-1 text-amber-700 dark:text-amber-400"
                 title="在地图中查看"
               >
                 <span>🗺️</span>
@@ -55,7 +55,7 @@
               <!-- 问问大师入口 -->
               <NuxtLink 
                 :to="`/consultant?q=${encodeURIComponent('关于《' + post.title + '》这篇文章，我还有些疑问...')}`"
-                class="text-xs border border-amber-400/30 px-2 py-1 rounded hover:bg-amber-400/10 transition-colors flex items-center gap-1"
+                class="text-xs border border-amber-600/30 dark:border-amber-400/30 px-2 py-1 rounded hover:bg-amber-50 dark:hover:bg-amber-400/10 transition-colors flex items-center gap-1 text-amber-700 dark:text-amber-400"
                 title="咨询营造大师"
               >
                 <span>💬</span>
@@ -69,17 +69,17 @@
       <!-- 文章正文 -->
       <!-- 使用 prose-invert 适配暗黑模式 -->
       <div 
-        class="prose prose-invert prose-stone prose-lg max-w-none 
-               prose-headings:font-serif prose-headings:text-amber-500/90
-               prose-a:text-amber-400 prose-img:rounded-xl prose-img:shadow-lg"
+        class="prose dark:prose-invert prose-stone prose-lg max-w-none 
+               prose-headings:font-serif prose-headings:text-amber-600 dark:prose-headings:text-amber-500/90
+               prose-a:text-amber-600 dark:prose-a:text-amber-400 prose-img:rounded-xl prose-img:shadow-lg"
         v-html="post.content"
       ></div>
 
       <!-- 底部交互 -->
-      <div class="mt-12 pt-8 border-t border-stone-700/50 flex justify-between items-center">
+      <div class="mt-12 pt-8 border-t border-border-default dark:border-border-subtle/50 flex justify-between items-center">
         <button 
           @click="router.back()"
-          class="text-stone-500 hover:text-stone-300 transition-colors"
+          class="text-text-muted hover:text-text-secondary transition-colors"
         >
           ← 返回列表
         </button>
@@ -87,14 +87,14 @@
         <div class="flex gap-4">
           <button 
             @click="handleLike" 
-            class="flex items-center gap-2 px-4 py-2 rounded-full bg-stone-700/50 hover:bg-red-900/30 hover:text-red-400 transition-all active:scale-95"
-            :class="{ 'text-red-400 bg-red-900/20': isLiked }"
+            class="flex items-center gap-2 px-4 py-2 rounded-full bg-bg-elevated dark:bg-border-subtle/50 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-500 dark:hover:text-red-400 transition-all active:scale-95 border border-border-default dark:border-transparent"
+            :class="{ 'text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-transparent': isLiked }"
           >
             <span :class="{ 'animate-bounce': isLiking }">❤️</span>
             <span>{{ likes }}</span>
           </button>
           
-          <button class="flex items-center gap-2 px-4 py-2 rounded-full bg-stone-700/50 hover:bg-amber-900/30 hover:text-amber-400 transition-all">
+          <button class="flex items-center gap-2 px-4 py-2 rounded-full bg-bg-elevated dark:bg-border-subtle/50 hover:bg-amber-50 dark:hover:bg-amber-900/30 hover:text-amber-600 dark:hover:text-amber-400 transition-all border border-border-default dark:border-transparent">
             <span>⭐</span>
             <span>收藏</span>
           </button>

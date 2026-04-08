@@ -91,7 +91,7 @@ const handleWheel = (e) => {
   <div 
     v-if="isVisible"
     ref="containerRef"
-    class="fixed inset-0 z-[100] bg-stone-900 flex flex-col items-center justify-center overflow-hidden cursor-pointer"
+    class="fixed inset-0 z-[100] bg-bg-surface flex flex-col items-center justify-center overflow-hidden cursor-pointer"
     @wheel="handleWheel"
     @click="handleInteraction"
     @touchstart="handleInteraction"
@@ -106,25 +106,25 @@ const handleWheel = (e) => {
         <!-- 上方凸形构件 (榫) -->
         <div ref="topPieceRef" class="relative z-10 mb-[-2px]"> <!-- 负边距确保严丝合缝 -->
           <!-- 主体 -->
-          <div class="w-32 h-24 bg-stone-800/90 backdrop-blur-sm border border-stone-600/50 rounded-t-lg relative shadow-lg">
+          <div class="w-32 h-24 bg-bg-elevated/90 backdrop-blur-sm border border-border-subtle/50 rounded-t-lg relative shadow-lg">
              <!-- 凸出部分 -->
-             <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 w-12 h-8 bg-stone-800/90 border-l border-r border-b border-stone-600/50"></div>
+             <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 w-12 h-8 bg-bg-elevated/90 border-l border-r border-b border-border-subtle/50"></div>
              <!-- 装饰线 -->
-             <div class="absolute top-4 left-4 right-4 h-[1px] bg-stone-600/30"></div>
+             <div class="absolute top-4 left-4 right-4 h-[1px] bg-border-default/30"></div>
           </div>
         </div>
 
         <!-- 下方凹形构件 (卯) -->
         <div ref="bottomPieceRef" class="relative z-10 mt-[-2px]">
           <!-- 主体 -->
-          <div class="w-32 h-24 bg-stone-800/90 backdrop-blur-sm border border-stone-600/50 rounded-b-lg relative shadow-lg flex justify-center">
+          <div class="w-32 h-24 bg-bg-elevated/90 backdrop-blur-sm border border-border-subtle/50 rounded-b-lg relative shadow-lg flex justify-center">
              <!-- 凹进部分 -->
-             <div class="absolute top-0 left-0 w-[calc(50%-1.5rem)] h-8 bg-stone-800/90 border-t border-l border-stone-600/50"></div>
-             <div class="absolute top-0 right-0 w-[calc(50%-1.5rem)] h-8 bg-stone-800/90 border-t border-r border-stone-600/50"></div>
-             <div class="absolute top-8 left-0 right-0 bottom-0 bg-stone-800/90 border-l border-r border-b border-stone-600/50 rounded-b-lg"></div>
+             <div class="absolute top-0 left-0 w-[calc(50%-1.5rem)] h-8 bg-bg-elevated/90 border-t border-l border-border-subtle/50"></div>
+             <div class="absolute top-0 right-0 w-[calc(50%-1.5rem)] h-8 bg-bg-elevated/90 border-t border-r border-border-subtle/50"></div>
+             <div class="absolute top-8 left-0 right-0 bottom-0 bg-bg-elevated/90 border-l border-r border-b border-border-subtle/50 rounded-b-lg"></div>
              
              <!-- 装饰线 -->
-             <div class="absolute bottom-4 left-4 right-4 h-[1px] bg-stone-600/30"></div>
+             <div class="absolute bottom-4 left-4 right-4 h-[1px] bg-border-default/30"></div>
           </div>
         </div>
 
@@ -138,16 +138,16 @@ const handleWheel = (e) => {
 
     <!-- 文字区域 (绝对居中，初始隐藏) -->
     <div ref="textRef" class="absolute inset-0 flex flex-col items-center justify-center z-20 px-6">
-      <h1 class="text-7xl md:text-9xl font-serif font-bold text-stone-100 tracking-[0.2em] md:tracking-[0.3em] drop-shadow-2xl text-center leading-tight">
+      <h1 class="text-7xl md:text-9xl font-serif font-bold text-text-primary tracking-[0.2em] md:tracking-[0.3em] drop-shadow-2xl text-center leading-tight">
         榫卯流年
       </h1>
       
       <!-- 副标题 / 诗句 -->
       <div class="mt-8 md:mt-12 text-center space-y-3 opacity-80">
-        <p class="text-lg md:text-xl text-stone-300 font-serif tracking-widest leading-loose">
+        <p class="text-lg md:text-xl text-text-secondary font-serif tracking-widest leading-loose">
           一凹一凸，阴阳咬合
         </p>
-        <p class="text-sm md:text-base text-stone-400 font-light tracking-wider leading-relaxed max-w-2xl mx-auto">
+        <p class="text-sm md:text-base text-text-secondary font-light tracking-wider leading-relaxed max-w-2xl mx-auto">
           不用一钉一铆，让木头与木头对话，让时间与时间相连
         </p>
       </div>
@@ -155,7 +155,7 @@ const handleWheel = (e) => {
 
     <!-- 引导提示 -->
     <div ref="hintRef" class="absolute bottom-12 left-0 w-full text-center z-30">
-      <div class="text-stone-400 text-base tracking-widest animate-bounce flex flex-col items-center gap-2 font-light opacity-60 hover:opacity-100 transition-opacity duration-300">
+      <div class="text-text-secondary text-base tracking-widest animate-bounce flex flex-col items-center gap-2 font-light opacity-60 hover:opacity-100 transition-opacity duration-300">
         <span>向上滑动开启</span>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />

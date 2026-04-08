@@ -18,14 +18,14 @@ const scrollToScene = (index) => {
 </script>
 
 <template>
-  <nav class="fixed top-1/2 right-8 z-50 transform -translate-y-1/2 flex flex-col items-center space-y-4 mix-blend-difference">
-    <div class="flex flex-col space-y-4">
+  <nav class="fixed top-1/2 right-8 z-50 transform -translate-y-1/2 flex flex-col items-center space-y-4">
+    <div class="flex flex-col space-y-4 bg-bg-surface/80 backdrop-blur-md px-3 py-6 rounded-full border border-border-subtle shadow-lg">
       <button 
         v-for="(scene, index) in scenes" 
         :key="index"
         @click="scrollToScene(index)"
-        class="w-8 h-8 rounded-full border border-white flex items-center justify-center text-xs transition-all duration-300 hover:bg-white hover:text-black cursor-pointer"
-        :class="{ 'bg-white text-black': store.currentScene === index }"
+        class="w-8 h-8 rounded-full border border-text-primary flex items-center justify-center text-xs transition-all duration-300 hover:bg-text-primary hover:text-bg-base cursor-pointer"
+        :class="{ 'bg-text-primary text-bg-base': store.currentScene === index }"
       >
         {{ scene }}
       </button>

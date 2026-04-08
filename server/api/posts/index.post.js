@@ -30,11 +30,11 @@ export default defineEventHandler(async (event) => {
     )
 
     // 点亮逻辑：如果关联了古建，更新 architectures 表的 is_lit 字段为 1
-    // 同时更新 article_count
+    // (article_count 现在通过联表动态计算，不再直接修改字段)
     if (body.architecture_id) {
       db.prepare(`
         UPDATE architectures 
-        SET is_lit = 1, article_count = article_count + 1 
+        SET is_lit = 1
         WHERE id = ?
       `).run(body.architecture_id)
     }

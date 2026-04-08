@@ -10,8 +10,16 @@ export default defineNuxtConfig({
   // 模块注册
   modules: [
     '@tresjs/nuxt',
-    '@pinia/nuxt'
+    '@pinia/nuxt',
+    '@nuxtjs/color-mode'
   ],
+
+  // Color Mode 配置
+  colorMode: {
+    classSuffix: '',
+    preference: 'system',
+    fallback: 'dark'
+  },
 
   // 引入你的全局样式
   css: ['./assets/css/style.css'],

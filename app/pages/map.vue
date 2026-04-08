@@ -15,6 +15,9 @@ const isSidebarOpen = ref(true)
 const sidebarMode = ref('explorer') // 'explorer' | 'detail'
 const selectedArch = ref(null)
 
+const colorMode = useColorMode()
+const isDark = computed(() => colorMode.value === 'dark')
+
 // -----------------------------------------------------------
 // 高德地图配置 (AMap JSAPI v2.0)
 // -----------------------------------------------------------
@@ -123,7 +126,7 @@ const createMapInstance = () => {
     mapInstance = new AMapLib.Map(mapContainer.value, {
       zoom: 5,
       center: [108.947, 34.259], // 暂以中心地带为视图主中心
-      mapStyle: 'amap://styles/dark', // 暗色样式配合工业风
+      mapStyle: isDark.value ? 'amap://styles/dark' : 'amap://styles/macaron', 
       viewMode: '3D'
     })
 
@@ -172,12 +175,15 @@ const initCluster = () => {
         const arch = context.data[0].extData
         const isSelected = selectedArch.value && selectedArch.value.id === arch.id
         
-        // 工业古风暗黑图标样式
+        // 动态读取主题颜色
+        const color = isDark.value ? '#ffbf00' : '#d97706' // amber-500 or amber-600
+        const bgColor = isDark.value ? '#000' : '#fff'
+
         const content = `
         <div class="relative w-8 h-8 flex items-center justify-center cursor-pointer group hover:scale-110 transition-transform">
-          <div class="absolute inset-0 bg-[#ffbf00]/20 rounded-full ${isSelected ? 'animate-ping' : ''}"></div>
-          <div class="w-6 h-6 bg-black border-2 ${isSelected ? 'border-white' : 'border-[#ffbf00]'} rounded-full flex items-center justify-center z-10 shadow-[0_0_10px_rgba(255,191,0,0.6)]">
-             <div class="w-2 h-2 bg-[#ffbf00] rounded-full"></div>
+          <div class="absolute inset-0 rounded-full ${isSelected ? 'animate-ping' : ''}" style="background-color: ${color}33"></div>
+          <div class="w-6 h-6 border-2 rounded-full flex items-center justify-center z-10" style="background-color: ${bgColor}; border-color: ${isSelected ? (isDark.value ? '#fff' : '#000') : color}; box-shadow: 0 0 10px ${color}99">
+             <div class="w-2 h-2 rounded-full" style="background-color: ${color}"></div>
           </div>
         </div>
       `
@@ -195,18 +201,21 @@ const initCluster = () => {
         const count = context.count
         const size = Math.min(30 + count * 0.5, 60) // 大小随数量微调
         
+        const color = isDark.value ? '#ffbf00' : '#d97706'
+        const bgColor = isDark.value ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)'
+
         const div = document.createElement('div');
         div.style.width = size + 'px';
         div.style.height = size + 'px';
         div.style.borderRadius = '50%';
-        div.style.backgroundColor = 'rgba(0,0,0,0.8)';
-        div.style.border = '2px solid #ffbf00';
-        div.style.color = '#ffbf00';
+        div.style.backgroundColor = bgColor;
+        div.style.border = `2px solid ${color}`;
+        div.style.color = color;
         div.style.display = 'flex';
         div.style.alignItems = 'center';
         div.style.justifyContent = 'center';
         div.style.fontSize = '12px';
-        div.style.boxShadow = '0 0 10px rgba(255,191,0,0.4)';
+        div.style.boxShadow = `0 0 10px ${color}66`;
         div.innerHTML = count;
         
         context.marker.setContent(div)
@@ -226,7 +235,6 @@ const initCluster = () => {
     }
 }
 
-// 侧边栏筛选变化时增删地图点显隐 -> 更新聚合数据
 const updateMapMarkers = (visibleIds) => {
   if (!clusterInstance || !AMapLib) return
   
@@ -239,6 +247,18 @@ const updateMapMarkers = (visibleIds) => {
     
   clusterInstance.setData(filteredPoints)
 }
+
+watch(isDark, (dark) => {
+  if (mapInstance) {
+    mapInstance.setMapStyle(dark ? 'amap://styles/dark' : 'amap://styles/macaron')
+    
+    // 强制重绘聚合点以应用新主题颜色
+    if (clusterInstance && architectures.value.length) {
+      // 触发全量更新（可以根据当前筛选状态优化）
+      updateMapMarkers(architectures.value.map(a => a.id))
+    }
+  }
+})
 
 // 从地图或侧边栏点击一个建筑时触发的联动
 const handleArchSelect = (arch) => {
@@ -276,14 +296,14 @@ const handleArchSelect = (arch) => {
 
     <!-- 地图容器区 -->
     <div class="flex-1 relative w-full h-full">
-      <div ref="mapContainer" class="w-full h-full bg-black"></div>
+      <div ref="mapContainer" class="w-full h-full bg-bg-base"></div>
       
       <!-- 加载提示：如果数据没回来或高德没加载完毕 -->
       <div 
         v-if="!isLoaded && !errorMessage" 
-        class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/80 text-[#ffbf00] space-y-4"
+        class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-bg-base/80 backdrop-blur-sm text-amber-600 dark:text-amber-500 space-y-4"
       >
-        <svg class="animate-spin h-8 w-8 text-[#ffbf00]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <svg class="animate-spin h-8 w-8 text-amber-600 dark:text-amber-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
@@ -291,7 +311,7 @@ const handleArchSelect = (arch) => {
       </div>
       <div 
         v-else-if="errorMessage" 
-        class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/90 text-red-500 space-y-4"
+        class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-bg-base/90 backdrop-blur-sm text-red-500 space-y-4"
       >
         <span>{{ errorMessage }}</span>
       </div>
@@ -300,12 +320,12 @@ const handleArchSelect = (arch) => {
 </template>
 
 <style scoped>
-/* 覆盖高德地图默认水印等杂项，使其更暗更沉浸 */
+/* 覆盖高德地图默认水印等杂项 */
 :deep(.amap-logo), :deep(.amap-copyright) {
   display: none !important;
 }
 
 :deep(.amap-map) {
-  background-color: #000 !important;
+  background-color: var(--bg-base) !important;
 }
 </style>

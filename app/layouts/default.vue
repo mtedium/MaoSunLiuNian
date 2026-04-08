@@ -1,5 +1,5 @@
 <template>
-  <div class="relative min-h-screen bg-stone-950 text-stone-200 overflow-x-hidden font-sans">
+  <div class="relative min-h-screen bg-bg-base text-text-primary overflow-x-hidden font-sans">
     <!-- 全屏动态纹理背景 (z-index 最底层) -->
     <div class="fixed inset-0 z-0 opacity-20 pointer-events-none">
       <!-- 将来放置 Canvas 或 WebGL 纹理 -->

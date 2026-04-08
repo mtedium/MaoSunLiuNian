@@ -22,13 +22,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="fixed bottom-0 left-0 w-full h-1 bg-stone-800 z-50">
+  <div class="fixed bottom-0 left-0 w-full h-1 bg-bg-elevated z-50">
     <div 
       class="h-full bg-amber-600 transition-all duration-100 ease-out"
       :style="{ width: `${progress}%` }"
     ></div>
     <!-- Optional: Percentage Display -->
-    <div class="absolute right-4 bottom-4 text-xs font-mono text-stone-500 opacity-50">
+    <div class="absolute right-4 bottom-4 text-xs font-mono text-text-muted opacity-50">
        {{ Math.round(progress) }}%
     </div>
   </div>

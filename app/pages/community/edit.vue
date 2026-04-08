@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-stone-900 text-stone-200 p-8 pt-24">
+  <div class="min-h-screen bg-bg-surface text-text-primary p-8 pt-24">
     <div class="max-w-4xl mx-auto space-y-6">
       
       <!-- 标题输入 -->
@@ -12,10 +12,10 @@
 
       <!-- 关联古建搜索 -->
       <div class="relative group">
-        <div v-if="post.architecture" class="inline-flex items-center gap-2 bg-amber-900/30 text-amber-400 px-3 py-1 rounded-full border border-amber-800/50">
+        <div v-if="post.architecture" class="inline-flex items-center gap-2 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-3 py-1 rounded-full border border-amber-600/30 dark:border-amber-800/50">
           <span>🏛️</span>
           <span>{{ post.architecture.name }}</span>
-          <button @click="removeArchitecture" class="hover:text-amber-200 ml-1">×</button>
+          <button @click="removeArchitecture" class="hover:text-amber-600 dark:hover:text-amber-200 ml-1">×</button>
         </div>
 
         <div v-else class="relative">
@@ -24,32 +24,32 @@
             @input="handleSearch"
             type="text" 
             placeholder="搜索关联古建（如：应县木塔）..." 
-            class="w-full bg-stone-800/50 border border-stone-700 rounded-lg px-4 py-2 focus:border-amber-700 focus:outline-none transition-colors"
+            class="w-full bg-bg-surface dark:bg-bg-elevated/50 border border-border-default dark:border-border-subtle rounded-lg px-4 py-2 focus:border-amber-600 dark:focus:border-amber-700 focus:outline-none transition-colors"
           />
           
           <!-- 搜索结果下拉 -->
-          <ul v-if="searchResults.length > 0" class="absolute z-50 w-full mt-1 bg-stone-800 border border-stone-700 rounded-lg shadow-xl max-h-60 overflow-y-auto">
+          <ul v-if="searchResults.length > 0" class="absolute z-50 w-full mt-1 bg-bg-surface dark:bg-bg-elevated border border-border-default dark:border-border-subtle rounded-lg shadow-xl max-h-60 overflow-y-auto">
             <li 
               v-for="arch in searchResults" 
               :key="arch.id"
               @click="selectArchitecture(arch)"
-              class="px-4 py-2 hover:bg-stone-700 cursor-pointer flex justify-between items-center"
+              class="px-4 py-2 hover:bg-bg-elevated dark:hover:bg-border-subtle cursor-pointer flex justify-between items-center"
             >
               <span>{{ arch.name }}</span>
-              <span class="text-xs text-stone-500">{{ arch.era }}</span>
+              <span class="text-xs text-text-muted">{{ arch.era }}</span>
             </li>
           </ul>
         </div>
       </div>
 
       <!-- 编辑器区域容器 -->
-      <div v-if="editor" class="border border-stone-700 rounded-xl bg-stone-900/50 transition-all focus-within:border-amber-700/80 focus-within:ring-1 focus-within:ring-amber-700/50 overflow-hidden">
+      <div v-if="editor" class="border border-border-default dark:border-border-subtle rounded-xl bg-bg-surface dark:bg-bg-surface/50 transition-all focus-within:border-amber-600/80 dark:focus-within:border-amber-700/80 focus-within:ring-1 focus-within:ring-amber-600/50 dark:focus-within:ring-amber-700/50 overflow-hidden">
         
         <!-- 编辑器工具栏 -->
-        <div class="flex flex-wrap gap-2 p-3 bg-stone-800/50 border-b border-stone-700/50 backdrop-blur sticky top-0 z-10">
+        <div class="flex flex-wrap gap-2 p-3 bg-bg-elevated dark:bg-bg-elevated/50 border-b border-border-default dark:border-border-subtle/50 backdrop-blur sticky top-0 z-10">
           <button 
             @click="editor.chain().focus().toggleBold().run()" 
-            :class="{ 'bg-amber-900/40 text-amber-400': editor.isActive('bold'), 'hover:bg-stone-700 text-stone-400': !editor.isActive('bold') }" 
+            :class="{ 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400': editor.isActive('bold'), 'hover:bg-bg-surface dark:hover:bg-border-subtle text-text-secondary': !editor.isActive('bold') }" 
             class="p-2 rounded transition-colors" 
             title="加粗"
           >
@@ -57,7 +57,7 @@
           </button>
           <button 
             @click="editor.chain().focus().toggleHeading({ level: 2 }).run()" 
-            :class="{ 'bg-amber-900/40 text-amber-400': editor.isActive('heading', { level: 2 }), 'hover:bg-stone-700 text-stone-400': !editor.isActive('heading', { level: 2 }) }" 
+            :class="{ 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400': editor.isActive('heading', { level: 2 }), 'hover:bg-bg-surface dark:hover:bg-border-subtle text-text-secondary': !editor.isActive('heading', { level: 2 }) }" 
             class="p-2 rounded transition-colors" 
             title="H2"
           >
@@ -65,7 +65,7 @@
           </button>
           <button 
             @click="editor.chain().focus().toggleBulletList().run()" 
-            :class="{ 'bg-amber-900/40 text-amber-400': editor.isActive('bulletList'), 'hover:bg-stone-700 text-stone-400': !editor.isActive('bulletList') }" 
+            :class="{ 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400': editor.isActive('bulletList'), 'hover:bg-bg-surface dark:hover:bg-border-subtle text-text-secondary': !editor.isActive('bulletList') }" 
             class="p-2 rounded transition-colors" 
             title="列表"
           >
@@ -73,13 +73,13 @@
           </button>
           <button 
             @click="editor.chain().focus().toggleBlockquote().run()" 
-            :class="{ 'bg-amber-900/40 text-amber-400': editor.isActive('blockquote'), 'hover:bg-stone-700 text-stone-400': !editor.isActive('blockquote') }" 
+            :class="{ 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400': editor.isActive('blockquote'), 'hover:bg-bg-surface dark:hover:bg-border-subtle text-text-secondary': !editor.isActive('blockquote') }" 
             class="p-2 rounded transition-colors" 
             title="引用"
           >
             ""
           </button>
-          <label class="p-2 rounded hover:bg-stone-700 text-stone-400 cursor-pointer transition-colors" title="插入图片">
+          <label class="p-2 rounded hover:bg-bg-surface dark:hover:bg-border-subtle text-text-secondary cursor-pointer transition-colors" title="插入图片">
             IMG
             <input type="file" class="hidden" accept="image/*" @change="handleImageUpload" />
           </label>
@@ -88,17 +88,17 @@
         <!-- 编辑器内容区 -->
         <editor-content 
           :editor="editor" 
-          class="min-h-[500px] p-6 bg-transparent prose prose-invert prose-stone max-w-none focus:outline-none"
+          class="min-h-[500px] p-6 bg-transparent prose dark:prose-invert prose-stone max-w-none focus:outline-none"
         />
       </div>
 
       <!-- 底部操作栏 -->
-      <div class="flex justify-end gap-4 pt-4 border-t border-stone-800">
-        <button @click="router.back()" class="px-6 py-2 rounded-lg hover:bg-stone-800 text-stone-400">取消</button>
+      <div class="flex justify-end gap-4 pt-4 border-t border-border-default">
+        <button @click="router.back()" class="px-6 py-2 rounded-lg hover:bg-bg-elevated dark:hover:bg-border-subtle text-text-secondary transition-colors">取消</button>
         <button 
           @click="submitPost" 
           :disabled="isSubmitting"
-          class="px-6 py-2 bg-amber-700 hover:bg-amber-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          class="px-6 py-2 bg-amber-600 hover:bg-amber-500 dark:bg-amber-700 dark:hover:bg-amber-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors"
         >
           <span v-if="isSubmitting" class="animate-spin">⌛</span>
           {{ isEditMode ? '更新文章' : '发布文章' }}

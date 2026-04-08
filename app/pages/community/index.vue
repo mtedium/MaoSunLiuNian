@@ -1,13 +1,13 @@
 <template>
-  <div class="min-h-screen bg-stone-900 text-stone-200 p-8 pt-24">
+  <div class="min-h-screen bg-bg-surface text-text-primary p-8 pt-24">
     <div class="max-w-7xl mx-auto space-y-8">
       
       <!-- 顶部操作栏 -->
       <div class="flex justify-between items-center">
-        <h1 class="text-3xl font-serif text-amber-500">社区广场</h1>
+        <h1 class="text-3xl font-serif text-amber-600 dark:text-amber-500">社区广场</h1>
         <NuxtLink 
           to="/community/edit" 
-          class="px-4 py-2 bg-amber-700 hover:bg-amber-600 text-white rounded-lg flex items-center gap-2 transition-colors"
+          class="px-4 py-2 bg-amber-600 hover:bg-amber-500 dark:bg-amber-700 dark:hover:bg-amber-600 text-white rounded-lg flex items-center gap-2 transition-colors shadow-sm"
         >
           <span>✍️</span>
           <span>发布文章</span>
@@ -15,12 +15,12 @@
       </div>
 
       <!-- 瀑布流列表 -->
-      <div v-if="pending" class="text-center py-20 text-stone-500">
+      <div v-if="pending" class="text-center py-20 text-text-muted">
         <div class="animate-spin text-4xl mb-2">⏳</div>
         加载中...
       </div>
 
-      <div v-else-if="posts.length === 0" class="text-center py-20 text-stone-500 bg-stone-800/30 rounded-lg border border-stone-800">
+      <div v-else-if="posts.length === 0" class="text-center py-20 text-text-muted bg-bg-surface dark:bg-bg-elevated/30 rounded-lg border border-border-default dark:border-border-subtle">
         <div class="text-4xl mb-2">📭</div>
         暂无文章，快来发布第一篇吧！
       </div>
@@ -29,37 +29,37 @@
         <div 
           v-for="post in posts" 
           :key="post.id"
-          class="break-inside-avoid bg-stone-800 border border-stone-700 rounded-xl overflow-hidden hover:shadow-xl hover:border-amber-700/50 transition-all duration-300 group cursor-pointer"
+          class="break-inside-avoid bg-bg-surface dark:bg-bg-elevated border border-border-default dark:border-border-subtle rounded-xl overflow-hidden hover:shadow-xl hover:shadow-border-default/50 dark:hover:shadow-black/50 hover:border-amber-600/50 dark:hover:border-amber-700/50 transition-all duration-300 group cursor-pointer"
           @click="router.push(`/community/post/${post.id}`)"
         >
           <!-- 封面图 -->
-          <div v-if="post.cover_url" class="aspect-video w-full overflow-hidden">
+          <div v-if="post.cover_url" class="aspect-video w-full overflow-hidden bg-bg-elevated dark:bg-bg-base">
             <img 
               :src="post.cover_url" 
               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               alt="cover" 
             />
           </div>
-          <div v-else class="h-32 bg-stone-700/50 flex items-center justify-center text-stone-600">
+          <div v-else class="h-32 bg-bg-elevated dark:bg-border-subtle/50 flex items-center justify-center text-text-muted">
              <span class="text-4xl opacity-20">📝</span>
           </div>
 
           <!-- 内容区 -->
           <div class="p-4 space-y-3">
-            <h2 class="text-xl font-bold text-stone-100 group-hover:text-amber-400 transition-colors line-clamp-2">
+            <h2 class="text-xl font-bold text-text-primary group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-2">
               {{ post.title }}
             </h2>
             
             <!-- 关联古建 -->
-            <div v-if="post.architecture_id" class="flex items-center gap-1 text-xs text-amber-400/80 bg-amber-900/20 px-2 py-1 rounded w-fit">
+            <div v-if="post.architecture_id" class="flex items-center gap-1 text-xs text-amber-600 dark:text-amber-400/80 bg-amber-50 dark:bg-amber-900/20 px-2 py-1 rounded w-fit">
               <span>📍</span>
               <span>{{ getArchName(post) }}</span>
             </div>
 
             <!-- 底部信息 -->
-            <div class="flex justify-between items-center text-sm text-stone-500 pt-2 border-t border-stone-700/50">
+            <div class="flex justify-between items-center text-sm text-text-muted pt-2 border-t border-border-default dark:border-border-subtle/50 mt-4">
               <div class="flex items-center gap-2">
-                <div class="w-6 h-6 rounded-full bg-stone-600 flex items-center justify-center text-xs text-stone-300">
+                <div class="w-6 h-6 rounded-full bg-bg-elevated dark:bg-border-default flex items-center justify-center text-xs text-text-secondary border border-border-default dark:border-transparent">
                   {{ post.author_id === 1 ? '管' : 'U' }}
                 </div>
                 <span>{{ formatDate(post.created_at) }}</span>

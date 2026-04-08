@@ -154,17 +154,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col h-screen bg-[#0a0a0a] text-stone-200 font-sans overflow-hidden pt-20">
+  <div class="flex flex-col h-screen bg-bg-base text-text-primary font-sans overflow-hidden pt-20">
     <!-- 顶部标题栏 -->
-    <header class="flex items-center justify-between px-6 py-4 border-b border-stone-800 bg-[#0a0a0a]/90 backdrop-blur-sm z-10">
+    <header class="flex items-center justify-between px-6 py-4 border-b border-border-default bg-bg-base/90 backdrop-blur-sm z-10">
       <div class="flex items-center gap-4">
         <!-- 头像 -->
-        <div class="w-10 h-10 rounded-full bg-stone-800 border border-stone-700 flex items-center justify-center shrink-0 overflow-hidden">
+        <div class="w-10 h-10 rounded-full bg-bg-elevated border border-border-subtle flex items-center justify-center shrink-0 overflow-hidden">
           <span class="text-amber-600 font-serif text-lg">营</span>
         </div>
         <div>
-          <h1 class="text-lg font-serif font-bold text-stone-100">营造大师</h1>
-          <p class="text-xs text-stone-500">博古通今 · 榫卯专家</p>
+          <h1 class="text-lg font-serif font-bold text-text-primary">营造大师</h1>
+          <p class="text-xs text-text-muted">博古通今 · 榫卯专家</p>
         </div>
       </div>
       
@@ -179,14 +179,14 @@ onMounted(() => {
       >
         <!-- 大师消息 -->
         <div v-if="msg.role === 'assistant'" class="flex items-start gap-3 max-w-[85%] sm:max-w-[75%]">
-          <div class="w-8 h-8 rounded-full bg-stone-800 border border-stone-700 flex items-center justify-center shrink-0 mt-1">
+          <div class="w-8 h-8 rounded-full bg-bg-elevated border border-border-subtle flex items-center justify-center shrink-0 mt-1">
             <span class="text-amber-600 font-serif text-sm">营</span>
           </div>
-          <div class="bg-stone-900 border border-stone-800 rounded-2xl rounded-tl-none px-4 py-3 text-stone-200 shadow-sm leading-relaxed overflow-hidden">
+          <div class="bg-bg-surface border border-border-default rounded-2xl rounded-tl-none px-4 py-3 text-text-primary shadow-sm leading-relaxed overflow-hidden">
             <!-- Markdown 渲染 -->
              <div 
               v-if="msg.content"
-              class="prose prose-invert prose-amber max-w-none prose-p:my-1 prose-headings:text-amber-500 prose-a:text-amber-400 prose-strong:text-amber-200 prose-code:text-amber-300 prose-pre:bg-stone-950 prose-pre:border prose-pre:border-stone-800 text-sm sm:text-base"
+              class="prose dark:prose-invert prose-amber max-w-none prose-p:my-1 prose-headings:text-amber-600 dark:prose-headings:text-amber-500 prose-a:text-amber-600 dark:prose-a:text-amber-400 prose-strong:text-amber-700 dark:prose-strong:text-amber-200 prose-code:text-amber-700 dark:prose-code:text-amber-300 prose-pre:bg-bg-base prose-pre:border prose-pre:border-border-default text-sm sm:text-base"
               v-html="renderMarkdown(msg.content)"
             ></div>
             <!-- 加载光标 (当内容为空且正在加载时显示) -->
@@ -198,10 +198,10 @@ onMounted(() => {
 
         <!-- 用户消息 -->
         <div v-else class="flex items-start gap-3 max-w-[85%] sm:max-w-[75%] flex-row-reverse">
-          <div class="w-8 h-8 rounded-full bg-stone-800 border border-stone-700 flex items-center justify-center shrink-0 mt-1">
-            <span class="text-stone-400 font-serif text-sm">友</span>
+          <div class="w-8 h-8 rounded-full bg-bg-elevated border border-border-subtle flex items-center justify-center shrink-0 mt-1">
+            <span class="text-text-secondary font-serif text-sm">友</span>
           </div>
-          <div class="bg-stone-800 border border-stone-700 rounded-2xl rounded-tr-none px-4 py-3 text-amber-500 shadow-sm leading-relaxed whitespace-pre-wrap text-sm sm:text-base">
+          <div class="bg-bg-elevated border border-border-subtle rounded-2xl rounded-tr-none px-4 py-3 text-amber-500 shadow-sm leading-relaxed whitespace-pre-wrap text-sm sm:text-base">
             {{ msg.content }}
           </div>
         </div>
@@ -212,7 +212,7 @@ onMounted(() => {
     </main>
 
     <!-- 输入区域 -->
-    <footer class="p-4 sm:p-6 bg-[#0a0a0a] border-t border-stone-800">
+    <footer class="p-4 sm:p-6 bg-bg-base border-t border-border-default">
       <div class="max-w-4xl mx-auto">
         <!-- 锦囊（快捷提问）与 引导反哺 -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
@@ -260,7 +260,7 @@ onMounted(() => {
             @keydown.enter.prevent="sendMessage()"
             placeholder="请问大师..."
             rows="1"
-            class="w-full bg-stone-900 text-stone-200 rounded-xl border border-stone-800 px-4 py-3 focus:outline-none focus:border-amber-900/50 focus:ring-1 focus:ring-amber-900/50 resize-none min-h-[48px] max-h-32 scrollbar-hide"
+            class="w-full bg-bg-surface text-text-primary rounded-xl border border-border-default px-4 py-3 focus:outline-none focus:border-amber-900/50 focus:ring-1 focus:ring-amber-900/50 resize-none min-h-[48px] max-h-32 scrollbar-hide"
             style="field-sizing: content;"
           ></textarea>
           

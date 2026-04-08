@@ -9,7 +9,15 @@ export default defineEventHandler(async (event) => {
     }
 
     const db = getDb()
-    const arch = db.prepare('SELECT * FROM architectures WHERE id = ?').get(id)
+    
+    // 连表查询文章数量
+    const arch = db.prepare(`
+        SELECT a.*, COUNT(p.id) as article_count 
+        FROM architectures a 
+        LEFT JOIN posts p ON a.id = p.architecture_id 
+        WHERE a.id = ? 
+        GROUP BY a.id
+    `).get(id)
 
     if (!arch) {
         throw createError({ statusCode: 404, statusMessage: 'Architecture not found' })
