@@ -96,7 +96,7 @@ graph TB
 #### 2.2.1 系统开发平台
 
 - **前端**：Nuxt 4.3.1, Vue 3.5.28, Tailwind CSS, GSAP (动画), TresJS/Three.js (3D渲染), ECharts, 高德地图JSAPI。
-- **后端**：Nitro, better-sqlite3。
+- **后端**：Nitro, node:sqlite。
 - **算法/脚本**：Python 3 (用于数据清洗与地理编码)。
 
 #### 2.2.2 系统运行平台
@@ -132,7 +132,7 @@ graph TB
 **请求流程**：
 
 ```
-Browser → Nuxt SSR → Nitro API Route → SQLite/better-sqlite3
+Browser → Nuxt SSR → Nitro API Route → node:sqlite
                          ↓
                    外部 AI API (可选)
 ```
@@ -222,7 +222,7 @@ sequenceDiagram
 #### 3.2.1 存储数据
 
 **1. 数据库**
-使用 SQLite（better-sqlite3），单例模式通过 `getDb()` 导出，启用 WAL 模式提升并发性能。数据库文件存于 `data/app.db`。
+使用 SQLite（node:sqlite），单例模式通过 `getDb()` 导出，启用 WAL 模式提升并发性能。数据库文件存于 `data/app.db`。
 
 **表1：Users（用户表）**
 

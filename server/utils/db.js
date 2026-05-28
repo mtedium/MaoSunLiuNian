@@ -1,4 +1,4 @@
-import Database from 'better-sqlite3'
+import { DatabaseSync as Database } from 'node:sqlite'
 import bcrypt from 'bcryptjs'
 import { resolve } from 'path'
 import { existsSync, mkdirSync } from 'fs'
@@ -23,7 +23,7 @@ export function getDb() {
             _db = new Database(dbPath)
 
             // 启用 WAL 模式提升性能
-            _db.pragma('journal_mode = WAL')
+            _db.exec('PRAGMA journal_mode = WAL')
 
             // 初始化表结构
             initTables()

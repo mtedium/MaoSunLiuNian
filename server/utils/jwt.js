@@ -1,3 +1,13 @@
+/*
+ * @Author: Mtedium mtedium@outlook.com
+ * @Date: 2026-02-21 19:42:39
+ * @LastEditors: Mtedium mtedium@outlook.com
+ * @LastEditTime: 2026-05-28 17:26:51
+ * @FilePath: \榫卯流年\server\utils\jwt.js
+ * @Description: 
+ * 
+ * Copyright (c) 2026 by Mtedium, All Rights Reserved. 
+ */
 import jwt from 'jsonwebtoken'
 
 // JWT 密钥，生产环境应使用环境变量
