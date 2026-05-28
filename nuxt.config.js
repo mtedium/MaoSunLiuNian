@@ -14,6 +14,22 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode'
   ],
 
+  // nitro: {
+  //   externals: {
+  //     trace: false,
+  //     inline: [
+  //       'hookable', 
+  //       'unhead', 
+  //       '@unhead/vue',
+  //       'entities'
+  //     ]
+  //   },
+  //   // 强行把所有依赖全部揉进最终的单文件代码里
+  //   experimental: {
+  //     noExternals: true
+  //   }
+  // },
+
   // Color Mode 配置
   colorMode: {
     classSuffix: '',
